@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 /**
  * 游戏定时任务
  */
@@ -18,28 +20,26 @@ public class GameScheduled {
     @Autowired
     private GameService gameService;
 
-
     /**
      * fixedRate 表示任务执行之间的时间间隔，具体是指两次任务的开始时间间隔，即第二次任务开始时，第一次任务可能还没结束。
      * fixedDelay 表示任务执行之间的时间间隔，具体是指两次任务的结束时间间隔。
      */
-    @Scheduled(fixedDelay = 90000)
+//    @Scheduled(fixedDelay = 90000)
+    @Scheduled(fixedRate = 90001)
     public void startGame(){
+        Random random = new Random();
         while (!BittingValue.falg){
-            try {
-                Thread.sleep(1000l);
-                log.error("WAIT 1000ml");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            //如果90秒过了 还没有请求结束接口就自动结束，选择一个赢率最大的
+            Integer num = random.nextInt(28);
+            if(BittingValue.ylMap.get(num).compareTo(BittingValue.minRate)>0 || BittingValue.ylMap.get(num).compareTo(BittingValue.minRate)==0){
+                gameService.end(num);
             }
         }
         BittingValue.falg = false;
         BittingValue.initBittingValue();
-        BittingValue.game = gameService.initGame(new Game());
         log.error("STARTING! NEW GAME!");
-        log.error(BittingValue.game.toString());
-
-        gameService.saveGame();
+        BittingValue.game = gameService.initGame(new Game());
+//        gameService.saveGame();
     }
 
     @Scheduled(fixedRate = 10000)

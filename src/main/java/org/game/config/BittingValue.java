@@ -22,11 +22,11 @@ public class BittingValue {
     /**
      * 上一把用户的投注金额，方便续压
      */
-    public static Map<Integer,Map<Integer, Integer>> betMap2;
+    public static Map<Integer,Map<Integer, Integer>> betMap2=new LinkedHashMap<>();
 
     public static Game game;
 
-    public final static double maxRate = 0.5;
+    public final static double maxRate = 1.01;
     public final static double minRate = 0.0;
 
     public static Boolean falg = true;
@@ -44,7 +44,8 @@ public class BittingValue {
         /**
          * 把上一把的押注金额放入到betMap2中方便续压
          */
-        betMap2.putAll(betMap);
+        if(null!=betMap && !betMap.isEmpty())
+            BittingValue.betMap2.putAll(betMap);
         jeMap = new LinkedHashMap<Integer,Integer>(){
             {
                 put(0, 0);

@@ -74,7 +74,7 @@ public class JWTToken {
             //在解析JWT字符串时，如果密钥不正确，将会解析失败，抛出SignatureException异常，说明该JWT字符串是伪造的
             //在解析JWT字符串时，如果‘过期时间字段’已经早于当前时间，将会抛出ExpiredJwtException异常，说明本次请求已经失效
         } catch (Exception e) {
-            throw new Exception("用户信息有误！");
+                throw new Exception("用户信息有误！");
         }
     }
 

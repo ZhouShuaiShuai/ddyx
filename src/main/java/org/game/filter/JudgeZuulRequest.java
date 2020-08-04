@@ -53,20 +53,6 @@ public class JudgeZuulRequest {
             log.error("path : " + path);
             log.error("xAuthToken : " + xAuthToken);
             log.error("access-control-request-headers : " + req.getHeader("access-control-request-headers"));
-//            log.error("----------------------------------------------------------------------------");
-//            log.error("request中的header");
-//            Enumeration<String> headers = req.getHeaderNames();
-//            while (headers.hasMoreElements()){
-//                String name = headers.nextElement();
-//                log.error("headers :  [ "+name+" ] : "+ req.getHeader(name) );
-//            }
-//            log.error("request中的param");
-//            Enumeration<String> params = req.getParameterNames();
-//            while (params.hasMoreElements()){
-//                String name = params.nextElement();
-//                String param = req.getParameter(name);
-//                log.error("params :  [ "+name +" ] : "+param);
-//            }
             log.error("****************************************************************************");
             //过滤调预检请求
             if (!StringUtils.isEmpty(req.getHeader("access-control-request-headers"))) {

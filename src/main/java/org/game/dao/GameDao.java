@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface GameDao extends JpaRepository<Game, Integer> {
 
-    @Query(value = "SELECT * FROM game where re_time = 0 group by id desc limit 10;",
+    @Query(value = "SELECT * FROM game where re_time < 1 group by id desc limit 10;",
             nativeQuery = true)
     List<Game> findTenGame();
 

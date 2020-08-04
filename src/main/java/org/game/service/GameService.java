@@ -1,5 +1,6 @@
 package org.game.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.game.config.BittingValue;
 import org.game.dao.GameDao;
 import org.game.dao.UserDao;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class GameService {
 
     @Autowired
@@ -63,6 +65,7 @@ public class GameService {
     }
 
     public Result getGameInfo(){
+        log.error(BittingValue.game.toString());
         return new Result(new LinkedHashMap<String,Object>(){{
             put("当前游戏信息",BittingValue.game);
             put("最近十次游戏记录",gameDao.findTenGame());
@@ -100,6 +103,7 @@ public class GameService {
     }
 
     public Result end(Integer checkNum){
+        log.error("END!!!  "+checkNum);
         Integer winNum = 0;
         Set<Integer> userIds = BittingValue.betMap.keySet();
         for(Integer userId : userIds){
@@ -124,6 +128,18 @@ public class GameService {
         }
         BittingValue.game.setWinNum(winNum);
         BittingValue.falg = true;
+        //更新结束游戏的数据
+        BittingValue.game.setNumber(checkNum);
+        while (BittingValue.game.getReTime()>0){
+            try {
+                Thread.sleep(10L);
+                log.error("WAIT 10ml");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        BittingValue.game.setReTime(BittingValue.game.getReTime());
+        gameDao.saveAndFlush(BittingValue.game);
         return new Result(BittingValue.game);
     }
 

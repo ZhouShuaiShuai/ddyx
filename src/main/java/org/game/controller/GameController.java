@@ -42,7 +42,7 @@ public class GameController {
         if(nums.size()<=0 || counts.size() <=0 || nums.size()!=counts.size()) return new Result("投注数量为空！或者不一致！",null);
         Integer count = counts.stream().mapToInt(c -> c).sum();
         User user = UserUtil.getUserByReq(req, userDao);
-        if(new BigDecimal(count).compareTo(user.getMoney()) > 0) return new Result("小金库余额不足！",null);
+        if(new BigDecimal(count).compareTo(user.getMoney()) > 0) return new Result("余额不足！",null);
         Map<Integer, Integer> betMap = new LinkedHashMap<>();
         for(int i =0;i<nums.size();i++){
             betMap.put(nums.get(i),counts.get(i));
@@ -65,6 +65,7 @@ public class GameController {
     @GetMapping("endCom")
     @ApiOperation(value = "游戏结束，返回选取的数字用于做用户结算")
     public Result endCom(Integer num){
+        if(num == null) return new Result("num为空！",null);
         return gameService.end(num);
     }
 

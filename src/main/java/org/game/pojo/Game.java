@@ -37,10 +37,13 @@ public class Game {
 
     private BigDecimal jackpot; //奖池
 
+    private Integer number;
+
     public Game(){
         startTime = new Date();
         endTime = new Date(System.currentTimeMillis()+90000);
         reTime = Integer.parseInt(Long.toString((endTime.getTime()-System.currentTimeMillis())/1000));
+        jackpot = new BigDecimal(0);
     }
 
     public Integer getReTime(){
