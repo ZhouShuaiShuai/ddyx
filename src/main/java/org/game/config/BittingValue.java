@@ -1,12 +1,16 @@
 package org.game.config;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.swagger.models.auth.In;
+import org.game.pojo.Betting;
 import org.game.pojo.Game;
+import org.game.service.BettingService;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 开奖变量池
@@ -24,7 +28,9 @@ public class BittingValue {
      */
     public static Map<Integer,Map<Integer, Integer>> betMap2=new LinkedHashMap<>();
 
-    public static Game game;
+    public static ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    public static Game game = new Game();
 
     public final static double maxRate = 1.01;
     public final static double minRate = 0.0;
@@ -40,12 +46,20 @@ public class BittingValue {
     /**
      * 每一把初始化
      */
-    public static void initBittingValue(){
+    public static void initBittingValue(Game game, BettingService bettingService){
         /**
          * 把上一把的押注金额放入到betMap2中方便续压
          */
-        if(null!=betMap && !betMap.isEmpty())
+        if(null!=betMap && !betMap.isEmpty()) {
             BittingValue.betMap2.putAll(betMap);
+
+            List<Betting> bettingList = new ArrayList<>();
+            for (Integer integer : BittingValue.betMap.keySet()) {
+                Betting betting = new Betting(integer, game.getId(), JSON.toJSONString(betMap.get(integer)));
+                bettingList.add(betting);
+            }
+            bettingService.saveAll(bettingList);
+        }
         jeMap = new LinkedHashMap<Integer,Integer>(){
             {
                 put(0, 0);

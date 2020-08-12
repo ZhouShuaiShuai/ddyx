@@ -49,11 +49,11 @@ public class JudgeZuulRequest {
             String path = req.getRequestURI();
 
 
-            log.error("****************************************************************************");
+//            log.error("****************************************************************************");
             log.error("path : " + path);
-            log.error("xAuthToken : " + xAuthToken);
-            log.error("access-control-request-headers : " + req.getHeader("access-control-request-headers"));
-            log.error("****************************************************************************");
+//            log.error("xAuthToken : " + xAuthToken);
+//            log.error("access-control-request-headers : " + req.getHeader("access-control-request-headers"));
+//            log.error("****************************************************************************");
             //过滤调预检请求
             if (!StringUtils.isEmpty(req.getHeader("access-control-request-headers"))) {
                 filterChain.doFilter(servletRequest, servletResponse);
@@ -77,17 +77,17 @@ public class JudgeZuulRequest {
                         if (user == null)
                             req.getRequestDispatcher("/user/userIsNull").forward(req, servletResponse);
 
-                        try {
+//                        try {
                             if (!JWTToken.isJwtValid(xAuthToken, user)) {
                                 log.error("用户登录超时！");
                                 req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
                             } else {
                                 filterChain.doFilter(servletRequest, servletResponse);
                             }
-                        } catch (Exception e) {
-                            log.error(e.getMessage());
-                            req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
-                        }
+//                        } catch (Exception e) {
+//                            log.error(e.getMessage());
+//                            req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
+//                        }
                     }
                 }
             }

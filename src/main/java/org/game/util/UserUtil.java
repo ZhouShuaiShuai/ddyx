@@ -15,7 +15,11 @@ public class UserUtil {
     public synchronized static User getUserByReq(HttpServletRequest req, UserDao userDao) {
         String xAuthToken = req.getHeader("x-auth-token");
         User user = JWTToken.getUserFromJwt(xAuthToken);
-        user = userDao.findById(user.getId()).get();
+        try {
+            user = userDao.findById(user.getId()).get();
+        }catch (NullPointerException e){
+            System.out.println("用户为空！");
+        }
         return user;
     }
 }

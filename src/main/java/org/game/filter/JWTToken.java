@@ -51,7 +51,7 @@ public class JWTToken {
         }
     }
 
-    public static boolean isJwtValid(String jwt, User user) throws Exception {
+    /*public static boolean isJwtValid(String jwt, User user) throws Exception {
         if (!userMap.get(user.getId()).equals(jwt)) {
             throw new Exception("用户已在其它设备登录！");
         }
@@ -76,6 +76,36 @@ public class JWTToken {
         } catch (Exception e) {
                 throw new Exception("用户信息有误！");
         }
+    }*/
+
+    public static boolean isJwtValid(String jwt, User user) {
+        try {
+
+            //解析JWT字符串中的数据，并进行最基础的验证
+            Claims claims = Jwts.parser()
+                    //SECRET_KEY是加密算法对应的密钥，jwt可以自动判断机密算法
+                    .setSigningKey(SECRET_KEY)
+                    //jwt是JWT字符串
+                    .parseClaimsJws(jwt)
+                    .getBody();
+            //获取自定义字段key
+            String key = claims.get("key", String.class);
+            //判断自定义字段是否正确
+            if (JSON.toJSONString(user).equals(key)) {
+                return true;
+            } else {
+                return false;
+            }
+            //在解析JWT字符串时，如果密钥不正确，将会解析失败，抛出SignatureException异常，说明该JWT字符串是伪造的
+            //在解析JWT字符串时，如果‘过期时间字段’已经早于当前时间，将会抛出ExpiredJwtException异常，说明本次请求已经失效
+        } catch (Exception e) {
+            try {
+                throw new Exception("用户信息有误！");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return true;
     }
 
 

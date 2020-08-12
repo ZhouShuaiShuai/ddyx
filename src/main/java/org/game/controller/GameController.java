@@ -44,22 +44,23 @@ public class GameController {
         User user = UserUtil.getUserByReq(req, userDao);
         if(new BigDecimal(count).compareTo(user.getMoney()) > 0) return new Result("余额不足！",null);
         Map<Integer, Integer> betMap = new LinkedHashMap<>();
-        for(int i =0;i<nums.size();i++){
+                for(int i =0;i<nums.size();i++){
             betMap.put(nums.get(i),counts.get(i));
         }
         return gameService.betting(user,betMap);
     }
 
-    @GetMapping("startCom")
-    @ApiOperation(value = "投注结束，后台开始计算")
+    @GetMapping("getNumbers")
+    @ApiOperation(value = "获取计算结果")
     public Result startCom(){
-        return gameService.start();
+        return new Result(BittingValue.returnMap);
     }
 
     @GetMapping("getGameInfo")
     @ApiOperation(value = "获取游戏信息")
-    public Result getGameInfo(){
-        return gameService.getGameInfo();
+    public Result getGameInfo(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        return gameService.getGameInfo(user);
     }
 
     @GetMapping("endCom")
@@ -74,6 +75,19 @@ public class GameController {
     public Result renewGame(HttpServletRequest req){
         User user = UserUtil.getUserByReq(req, userDao);
         return gameService.renewGame(user);
+    }
+
+    @GetMapping("findGameState")
+    @ApiOperation(value = "获取当前游戏信息状态")
+    public Result findGameState(Integer gameId){
+        return gameService.findGameState(gameId);
+    }
+
+    @GetMapping("findBettingValue")
+    @ApiOperation(value = "根据游戏ID获取当前用户押注状态")
+    public Result findBettingValue(Integer gameId,Integer number,HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        return gameService.findBettingValue(gameId,user.getId(),number);
     }
 
 }

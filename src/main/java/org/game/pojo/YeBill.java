@@ -31,7 +31,11 @@ public class YeBill {
 
     private Integer userId;
 
-    private BigDecimal balance;
+    private BigDecimal balance; //余额
+
+    private Integer gameId; //游戏期号
+
+    private BigDecimal gameMoney;   //使用的金钱 中了是正，押注是负
 
     public YeBill(){}
 

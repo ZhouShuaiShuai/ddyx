@@ -1,11 +1,15 @@
 package org.game.service;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.game.config.BittingValue;
+import org.game.dao.BettingDao;
 import org.game.dao.GameDao;
 import org.game.dao.UserDao;
 import org.game.dao.YeBillDao;
 import org.game.enums.Magnification;
+import org.game.pojo.Betting;
 import org.game.pojo.Game;
 import org.game.pojo.User;
 import org.game.pojo.YeBill;
@@ -15,9 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
 @Slf4j
@@ -31,6 +36,9 @@ public class GameService {
 
     @Autowired
     private YeBillDao yeBillDao;
+
+    @Autowired
+    private BettingDao bettingDao;
 
     @Transactional(rollbackFor = Exception.class)
     public synchronized Result betting(User user, Map<Integer, Integer> betMap){
@@ -46,6 +54,8 @@ public class GameService {
         userDao.saveAndFlush(user);
         //创建账单
         YeBill yeBill = new YeBill(money , "第"+BittingValue.game.getId()+"期投注", user);
+        yeBill.setGameId(BittingValue.game.getId());
+        yeBill.setGameMoney(new BigDecimal(-1).multiply(money));
         yeBillDao.save(yeBill);
 
         return new Result(new LinkedHashMap<String,Object>(){{
@@ -61,18 +71,31 @@ public class GameService {
     }
 
     public Game initGame(Game game){
+        this.startCom();
         return gameDao.save(game);
     }
 
-    public Result getGameInfo(){
-        log.error(BittingValue.game.toString());
+    public Result getGameInfo(User user){
+        List<Game> games = gameDao.findTenGame();
+        //设置中奖金额为用户中奖金额
+        for(Game game :games){
+            game.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),game.getId()));
+        }
         return new Result(new LinkedHashMap<String,Object>(){{
             put("当前游戏信息",BittingValue.game);
-            put("最近十次游戏记录",gameDao.findTenGame());
+            put("最近十次游戏记录",games);
+            if(BittingValue.betMap.get(user.getId())!=null){
+                put("当前用户押注信息",JSON.toJSONString(BittingValue.betMap.get(user.getId())));
+                put("当前用户投注额",((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
+            }else{
+                put("当前用户押注信息",null);
+                put("当前用户投注额",null);
+            }
+            put("当前用户信息",user);
         }});
     }
 
-    public Result start(){
+    private void start(){
         Set<Integer> userIds = BittingValue.betMap.keySet();
         BigDecimal sumMoney = BittingValue.game.getJackpot();
         for(Integer integer : userIds){
@@ -85,27 +108,37 @@ public class GameService {
 
         //计算盈利率
         for(Integer num : BittingValue.jeMap.keySet()){
-            Integer je = BittingValue.jeMap.get(num);
-            BittingValue.ylMap.put(num,1d-(Magnification.getPlByNum(num) * je/Double.valueOf(sumMoney.toString())));
+
+//            BittingValue.ylMap.put(num,1d-(Magnification.getPlByNum(num) * je/Double.valueOf(sumMoney.toString())));
+            BittingValue.ylMap.put(num,Double.valueOf(sumMoney.toString())-(Magnification.getPlByNum(num) * BittingValue.jeMap.get(num)));
         }
 
         //抛弃不在范围内的盈利率map
         for(Integer num : BittingValue.ylMap.keySet()){
-            if(BittingValue.ylMap.get(num)>BittingValue.minRate && BittingValue.ylMap.get(num)<BittingValue.maxRate){
+            if(BittingValue.ylMap.get(num)>=BittingValue.minRate
+                /*&& BittingValue.ylMap.get(num)<BittingValue.maxRate*/
+            ){
                 BittingValue.returnMap.put(num,BittingValue.ylMap.get(num));
             }
         }
 
-        return new Result(new LinkedHashMap<String,Object>(){{
-            put("计算后返回的集合",BittingValue.returnMap);
-            put("当前游戏信息",BittingValue.game);
-        }});
+        log.error("[GAME] "+BittingValue.game.toString());
+        log.error("[ylMap] "+BittingValue.ylMap.toString());
+        log.error("[jeMap] "+BittingValue.jeMap.toString());
+        log.error("[betMap] "+BittingValue.betMap.toString());
+        log.error("[returnMap] "+BittingValue.returnMap.toString());
     }
 
     public Result end(Integer checkNum){
         log.error("END!!!  "+checkNum);
-        Integer winNum = 0;
+        log.error("【GAMEID】  "+BittingValue.game.getId());
+
+        Game endGame = BittingValue.game;
+        endGame.setWinMoney(new BigDecimal(BittingValue.ylMap.get(checkNum)));
+        BittingValue.falg = true;
         Set<Integer> userIds = BittingValue.betMap.keySet();
+
+        Integer winNum = 0; //游戏赢的人数
         for(Integer userId : userIds){
             Map<Integer, Integer> betMap = BittingValue.betMap.get(userId);
             for(Integer num : betMap.keySet()){
@@ -119,6 +152,8 @@ public class GameService {
                         userDao.saveAndFlush(user);
 
                         YeBill yeBill = new YeBill(money, "第" + BittingValue.game.getId() + "期投注获利", user);
+                        yeBill.setGameId(BittingValue.game.getId());
+                        yeBill.setGameMoney(money);
                         yeBillDao.save(yeBill);
                     }
                 }
@@ -126,11 +161,11 @@ public class GameService {
                 BittingValue.jeMap.put(num,betMap.get(num)+BittingValue.jeMap.get(num));
             }
         }
-        BittingValue.game.setWinNum(winNum);
-        BittingValue.falg = true;
+        endGame.setWinNum(winNum);
+
         //更新结束游戏的数据
-        BittingValue.game.setNumber(checkNum);
-        while (BittingValue.game.getReTime()>0){
+        endGame.setNumber(checkNum);
+        while (endGame.getReTime()>0){
             try {
                 Thread.sleep(10L);
                 log.error("WAIT 10ml");
@@ -138,29 +173,52 @@ public class GameService {
                 e.printStackTrace();
             }
         }
-        BittingValue.game.setReTime(BittingValue.game.getReTime());
-        gameDao.saveAndFlush(BittingValue.game);
+
+        endGame.setReTime(BittingValue.game.getReTime());
+        gameDao.saveAndFlush(endGame);
+
         return new Result(BittingValue.game);
     }
 
-    public void saveGame(){
-        Runnable saveGame = (() -> {
+    public Result findGameState(Integer gameId){
+        Game game = gameDao.findById(gameId).get();
+        if(game.getReTime()<=0 && !game.getId().equals(BittingValue.game.getId())) return new Result(false);   //gameId这把游戏结束了
+        else return new Result(true);   //gameId这把游戏还没有结束
+    }
+
+    public Result findBettingValue(Integer gameId,Integer userId,Integer number) {
+        Betting betting = bettingDao.findFirstByUserIdAndGameId(userId,gameId);
+        if(betting!=null) {
+            Map<Integer, Integer> betMap = (Map<Integer, Integer>) JSON.parse(betting.getBettingMap());
+            LinkedHashMap<String, Object> returnMap = new LinkedHashMap<>();
+            returnMap.put("押注信息", betting.getBettingMap());
+            if(betMap.get(number)!=null) {
+                returnMap.put("投注号码盈利", Magnification.getPlByNum(number) * betMap.get(number));
+            }
+            return new Result(returnMap);
+        }else return new Result(null);
+    }
+
+    //开始计算
+    public void startCom(){
+        Runnable startCom = (() -> {
             Boolean falg = true;
             while (falg){
-                if(BittingValue.game.getReTime()==0){
-                    BittingValue.game.setReTime(0);
-                    gameDao.saveAndFlush(BittingValue.game);
+                if(BittingValue.game!=null && BittingValue.game.getReTime()<15 && BittingValue.game.getReTime()>10){
+                    this.start();
                     falg = false;
                 }else {
+//                    log.error("sleep 1 M");
+//                    log.error(BittingValue.game.toString());
                     try {
-                        Thread.sleep(500l);
+                        Thread.sleep(3000L);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
-        saveGame.run();
+        BittingValue.executorService.submit(startCom);
     }
 
 

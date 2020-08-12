@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+
 
 @Repository
 public interface YeBillDao extends JpaRepository<YeBill, Integer> {
@@ -15,5 +17,10 @@ public interface YeBillDao extends JpaRepository<YeBill, Integer> {
             countQuery = "SELECT count(*) FROM yebill WHERE user_id = ?1",
             nativeQuery = true)
     Page<YeBill> findByUserId(Integer userId,Pageable pageable);
+
+
+    @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and ye.game_id = ?2",
+            nativeQuery = true)
+    BigDecimal findYkByUserIdAAndGameId(Integer userId,Integer gameId);
 
 }

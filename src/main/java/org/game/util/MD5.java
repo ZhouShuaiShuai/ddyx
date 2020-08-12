@@ -1,6 +1,7 @@
 package org.game.util;
 
 import java.security.MessageDigest;
+import java.util.Random;
 
 /**
  * MD5 对密码进行加密处理
@@ -39,4 +40,5 @@ public class MD5 {
     }
 
 
+    public static Random random = new Random();
 }
