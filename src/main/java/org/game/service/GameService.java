@@ -1,28 +1,24 @@
 package org.game.service;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.game.config.BittingValue;
-import org.game.dao.BettingDao;
-import org.game.dao.GameDao;
-import org.game.dao.UserDao;
-import org.game.dao.YeBillDao;
+import org.game.dao.*;
+import org.game.pojo.UserInfo;
 import org.game.enums.Magnification;
 import org.game.pojo.Betting;
 import org.game.pojo.Game;
 import org.game.pojo.User;
 import org.game.pojo.YeBill;
 import org.game.result.Result;
+import org.game.util.MD5;
+import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
 @Slf4j
@@ -39,6 +35,9 @@ public class GameService {
 
     @Autowired
     private BettingDao bettingDao;
+
+    @Autowired
+    private UserInfoDao userInfoDao;
 
     @Transactional(rollbackFor = Exception.class)
     public synchronized Result betting(User user, Map<Integer, Integer> betMap){
@@ -77,13 +76,27 @@ public class GameService {
 
     public Result getGameInfo(User user){
         List<Game> games = gameDao.findTenGame();
+        //查询模拟用户数据
+        List<Game> userGames = games;
+        Game userGame = BittingValue.game;
+        userGame.setJackpot(new BigDecimal(MD5.random.nextInt(200) + (MD5.random.nextInt(10) * userGame.getReTime()*MD5.random.nextInt(5))));
+
+        for(Game game : userGames){
+            List<UserInfo> userInfos = userInfoDao.findAllByGameIdOrderByHlDesc(game.getId());
+            game.setWinNum(userInfos.size());
+            game.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+        }
+
+
         //设置中奖金额为用户中奖金额
         for(Game game :games){
             game.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),game.getId()));
         }
         return new Result(new LinkedHashMap<String,Object>(){{
             put("当前游戏信息",BittingValue.game);
+            put("当前游戏信息222",userGame);
             put("最近十次游戏记录",games);
+            put("最近十次游戏记录222",userGames);
             if(BittingValue.betMap.get(user.getId())!=null){
                 put("当前用户押注信息",JSON.toJSONString(BittingValue.betMap.get(user.getId())));
                 put("当前用户投注额",((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
@@ -138,12 +151,16 @@ public class GameService {
         BittingValue.falg = true;
         Set<Integer> userIds = BittingValue.betMap.keySet();
 
+        List<UserInfo> winList = UserUtil.init(checkNum,endGame.getId());
+
         Integer winNum = 0; //游戏赢的人数
         for(Integer userId : userIds){
+            UserInfo userInfo = new UserInfo();
             Map<Integer, Integer> betMap = BittingValue.betMap.get(userId);
             for(Integer num : betMap.keySet()){
                 if(checkNum.equals(num)){
                     winNum++;
+
                     synchronized (this) {
                         //计算赢利，然后加入到数据库中
                         BigDecimal money = new BigDecimal(Magnification.getPlByNum(num) * betMap.get(num));
@@ -151,16 +168,26 @@ public class GameService {
                         user.setMoney(user.getMoney().add(money));
                         userDao.saveAndFlush(user);
 
-                        YeBill yeBill = new YeBill(money, "第" + BittingValue.game.getId() + "期投注获利", user);
-                        yeBill.setGameId(BittingValue.game.getId());
+                        YeBill yeBill = new YeBill(money, "第" + endGame.getId() + "期投注获利", user);
+                        yeBill.setGameId(endGame.getId());
                         yeBill.setGameMoney(money);
                         yeBillDao.save(yeBill);
+
+                        userInfo.setUserName(user.getUserName());
+                        userInfo.setHeadImg(user.getHeadImg());
+                        userInfo.setGameId(endGame.getId());
+                        userInfo.setNum(checkNum);
+                        userInfo.setTz(betMap.get(num));
+                        userInfo.setHl(Integer.parseInt(money.toString()));
                     }
                 }
+
                 //累加每个数字投注的金额到jeMap中
                 BittingValue.jeMap.put(num,betMap.get(num)+BittingValue.jeMap.get(num));
             }
+            winList.add(userInfo);
         }
+
         endGame.setWinNum(winNum);
 
         //更新结束游戏的数据
@@ -176,7 +203,7 @@ public class GameService {
 
         endGame.setReTime(BittingValue.game.getReTime());
         gameDao.saveAndFlush(endGame);
-
+        userInfoDao.saveAll(winList);
         return new Result(BittingValue.game);
     }
 
