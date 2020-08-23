@@ -27,6 +27,9 @@ public class UserInfo {
     //获利
     private Integer hl;
 
+    //盈利
+    private Integer yl;
+
     private Integer gameId;
 
     private Integer num;

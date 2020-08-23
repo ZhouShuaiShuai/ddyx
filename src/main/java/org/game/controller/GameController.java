@@ -57,14 +57,14 @@ public class GameController {
     }
 
     @GetMapping("getGameInfo")
-    @ApiOperation(value = "获取游戏信息")
+    @ApiOperation(value = "获取游戏信息{后台}")
     public Result getGameInfo(HttpServletRequest req){
         User user = UserUtil.getUserByReq(req, userDao);
         return gameService.getGameInfo(user);
     }
 
     @GetMapping("endCom")
-    @ApiOperation(value = "游戏结束，返回选取的数字用于做用户结算")
+    @ApiOperation(value = "游戏结束，返回选取的数字用于做用户结算{后台}")
     public Result endCom(Integer num){
         if(num == null) return new Result("num为空！",null);
         return gameService.end(num);

@@ -18,4 +18,8 @@ public interface GameDao extends JpaRepository<Game, Integer> {
             nativeQuery = true)
     List<Game> findTenGame();
 
+    @Query(value = "SELECT * FROM game where re_time < 1 group by id desc limit 20;",
+            nativeQuery = true)
+    List<Game> find20Game();
+
 }

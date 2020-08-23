@@ -35,7 +35,7 @@ public class RankingController {
     @ApiOperation(value = "查询游戏数据排名")
     public Result findRanking(Integer gameId,Integer index) {
         Pageable pageable = PageRequest.of(index,20);
-        return new Result(userInfoDao.findAllByGameIdOrderByHlDesc(gameId,pageable));
+        return new Result(userInfoDao.findAllByGameIdOrderByYlDesc(gameId,pageable));
     }
 
 }

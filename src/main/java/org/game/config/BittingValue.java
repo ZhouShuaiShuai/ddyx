@@ -19,6 +19,8 @@ import java.util.concurrent.Executors;
 
 public class BittingValue {
 
+    public static Integer moneyPool = 0; //奖金池
+
     /**
      * 每局投注的数字和金额的总和，每一个用户投注都会向里面添加
      */
@@ -101,6 +103,7 @@ public class BittingValue {
             put(25,0.00d);put(26,0.00d);put(27,0.00d);}};
         betMap = Collections.synchronizedMap(new HashMap<>());
         returnMap = new LinkedHashMap<>();
+        moneyPool = 0;
     }
 
 }

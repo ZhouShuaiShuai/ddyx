@@ -52,6 +52,17 @@ public class Game {
         jackpot = new BigDecimal(0);
     }
 
+    public Game(Game game){
+        this.startTime = new Date(game.getStartTime());
+        this.endTime = new Date(game.getEndTime());
+        this.numbers = game.getNumbers();
+        this.number = game.getNumber();
+        this.jackpot = game.getJackpot();
+        this.id = game.getId();
+        this.winNum = game.getWinNum();
+        this.winMoney = game.getWinMoney();
+    }
+
     public Integer getReTime(){
         return Integer.parseInt(Long.toString((endTime.getTime()-System.currentTimeMillis())/1000));
     }

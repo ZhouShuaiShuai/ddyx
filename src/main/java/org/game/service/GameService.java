@@ -75,28 +75,39 @@ public class GameService {
     }
 
     public Result getGameInfo(User user){
-        List<Game> games = gameDao.findTenGame();
+//        List<Game> games = gameDao.findTenGame();
+        List<Game> games = gameDao.find20Game();
         //查询模拟用户数据
-        List<Game> userGames = games;
-        Game userGame = BittingValue.game;
-        userGame.setJackpot(new BigDecimal(MD5.random.nextInt(200) + (MD5.random.nextInt(10) * userGame.getReTime()*MD5.random.nextInt(5))));
+        List<Game> userGames = new ArrayList<>(games);
+        Game resultGame = new Game(BittingValue.game);
+        Game userGame = new Game(BittingValue.game);
+        Integer moneyPool = (MD5.random.nextInt(10)+1) *
+                (MD5.random.nextInt(9)+1) *
+                (MD5.random.nextInt(8)+1) *
+                (100-userGame.getReTime())*MD5.random.nextInt(5);
+
+
+        while (moneyPool < BittingValue.moneyPool){
+            moneyPool = moneyPool*(MD5.random.nextInt(4)+1);
+        }
+        userGame.setJackpot(new BigDecimal(moneyPool));
+        BittingValue.moneyPool = moneyPool;
 
         for(Game game : userGames){
-            List<UserInfo> userInfos = userInfoDao.findAllByGameIdOrderByHlDesc(game.getId());
+            List<UserInfo> userInfos = userInfoDao.findAllByGameIdOrderByYlDesc(game.getId());
             game.setWinNum(userInfos.size());
             game.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
         }
-
 
         //设置中奖金额为用户中奖金额
         for(Game game :games){
             game.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),game.getId()));
         }
         return new Result(new LinkedHashMap<String,Object>(){{
-            put("当前游戏信息",BittingValue.game);
+            put("当前游戏信息",resultGame);
             put("当前游戏信息222",userGame);
-            put("最近十次游戏记录",games);
-            put("最近十次游戏记录222",userGames);
+            put("最近二十次游戏记录",games);
+            put("最近二十次游戏记录222",userGames);
             if(BittingValue.betMap.get(user.getId())!=null){
                 put("当前用户押注信息",JSON.toJSONString(BittingValue.betMap.get(user.getId())));
                 put("当前用户投注额",((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));

@@ -35,7 +35,7 @@ public class UserController extends UserErrorController {
     private UserDao userDao;
 
     @GetMapping("findAll")
-    @ApiOperation(value = "获取所有用户信息")
+    @ApiOperation(value = "获取所有用户信息{后台}")
     public Result findAll() {
         return new Result(userService.findAll());
     }

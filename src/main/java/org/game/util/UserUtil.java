@@ -39,6 +39,7 @@ public class UserUtil {
             Integer tze = MD5.random.nextInt((i+10)*350);
             userInfo.setTz(tze);
             userInfo.setHl((tze/ Magnification.getPlByNum(num) +200+ MD5.random.nextInt(i+100))*Magnification.getPlByNum(num));
+            userInfo.setYl(userInfo.getHl()-userInfo.getTz());
             list.add(userInfo);
         }
 

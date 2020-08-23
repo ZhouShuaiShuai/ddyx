@@ -69,7 +69,7 @@ public class BillController {
     @ApiOperation(value = "余额的变动日志")
     public Result getYeLog(Integer pageIndex, Integer pageSize, HttpServletRequest req) {
         User user = UserUtil.getUserByReq(req, userDao);
-        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "create_date");
+        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.DESC, "create_date");
         return billService.getYeLog(user.getId(), pageable);
     }
 
@@ -77,7 +77,7 @@ public class BillController {
     @ApiOperation(value = "小金库的变动日志")
     public Result getJkLog(Integer pageIndex, Integer pageSize, HttpServletRequest req) {
         User user = UserUtil.getUserByReq(req, userDao);
-        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "create_date");
+        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.DESC, "create_date");
         return billService.getJkLog(user.getId(), pageable);
     }
 
