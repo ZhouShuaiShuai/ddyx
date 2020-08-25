@@ -244,7 +244,7 @@ public class GameService {
                 //累加每个数字投注的金额到jeMap中
                 BittingValue.jeMap.put(num,betMap.get(num)+BittingValue.jeMap.get(num));
             }
-            if(userInfo.getYl()>=0){
+            if(userInfo.getYl()!= null && userInfo.getYl()>=0){
                 winList.add(userInfo);
             }
 
