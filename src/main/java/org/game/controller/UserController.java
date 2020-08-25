@@ -138,5 +138,11 @@ public class UserController extends UserErrorController {
         return userService.updateJkPwd(user, pwd1);
     }
 
+    @GetMapping("findUserByIdAndPhone")
+    @ApiOperation(value = "根据id和电话模糊匹配")
+    public Result findUserByIdAndPhone(Integer id,String phone){
+        return userService.findUserByIdAndPhone(id,phone);
+    }
+
 
 }

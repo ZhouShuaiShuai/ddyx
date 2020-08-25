@@ -79,17 +79,9 @@ public class GameController {
 
     @GetMapping("getUserBillInfo")
     @ApiOperation(value = "获取当前用户押注信息")
-    public Result getUserBillInfo(HttpServletRequest req){
+    public Result getUserBillInfo(HttpServletRequest req,Integer gameId){
         User user = UserUtil.getUserByReq(req, userDao);
-        return new Result(new LinkedHashMap<String,Object>(){{
-            if(BittingValue.betMap.get(user.getId())!=null){
-                put("当前用户押注信息", JSON.toJSONString(BittingValue.betMap.get(user.getId())));
-                put("当前用户投注额",((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
-            }else{
-                put("当前用户押注信息",null);
-                put("当前用户投注额",null);
-            }
-        }});
+        return gameService.getUserBillInfo(user,gameId);
     }
 
     @GetMapping("endCom")

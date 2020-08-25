@@ -17,6 +17,6 @@ public interface UserInfoDao extends JpaRepository<UserInfo,Integer> {
 
     Page<UserInfo> findAllByGameIdOrderByYlDesc(Integer gameId, Pageable pageable);
 
-    List<UserInfo> findAllByGameIdOrderByYlDesc(Integer gameId);
+    List<UserInfo> findAllByGameId(Integer gameId);
 
 }

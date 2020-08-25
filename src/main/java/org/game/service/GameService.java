@@ -98,7 +98,7 @@ public class GameService {
         for(Game userGame :games){
             userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
 
-            List<UserInfo> userInfos = userInfoDao.findAllByGameIdOrderByYlDesc(game.getId());
+            List<UserInfo> userInfos = userInfoDao.findAllByGameId(game.getId());
             userGame.setWinNum(userInfos.size());
             userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
         }
@@ -140,7 +140,7 @@ public class GameService {
         BittingValue.moneyPool = moneyPool;
 
         for(Game game : userGames){
-            List<UserInfo> userInfos = userInfoDao.findAllByGameIdOrderByYlDesc(game.getId());
+            List<UserInfo> userInfos = userInfoDao.findAllByGameId(game.getId());
             game.setWinNum(userInfos.size());
             game.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
         }
@@ -316,6 +316,27 @@ public class GameService {
         BittingValue.executorService.submit(startCom);
     }
 
+    public Result getUserBillInfo(User user,Integer gameId){
+        if(BittingValue.game.getId().equals(gameId)){
+            return new Result(new LinkedHashMap<String,Object>(){
+                {
+                    put("当前用户押注信息", JSON.toJSONString(BittingValue.betMap.get(user.getId())));
+                    put("当前用户投注额", ((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
+                    put("当前剩余时间",BittingValue.game.getReTime());
+                }});
+        }else {
+            Game game = gameDao.findById(gameId).get();
+            Betting betting = bettingDao.findFirstByUserIdAndGameId(user.getId(),gameId);
+            Map<Integer, Integer> betMap = (Map<Integer, Integer>) JSON.parse(betting.getBettingMap());
+            return new Result(new LinkedHashMap<String,Object>(){
+                {
+                    put("当前用户押注信息", betting.getBettingMap());
+                    put("当前用户投注额", betMap.values().stream().mapToInt(((x) -> x)).sum());
+                    put("当前剩余时间",game.getReTime());
+                }});
+        }
+
+    }
 
 
 }

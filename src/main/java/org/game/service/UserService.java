@@ -6,8 +6,11 @@ import org.game.pojo.User;
 import org.game.result.Result;
 import org.game.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +88,22 @@ public class UserService {
 
         user.setJkpwd(MD5.getMd5(pwd));
         return new Result(userDao.saveAndFlush(user));
+    }
+
+    public Result findUserByIdAndPhone(Integer id,String phone){
+        Specification querySpecifi = (Specification<User>) (root, criteriaQuery, criteriaBuilder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+            if(null != id){
+                predicates.add(criteriaBuilder.like(root.get("id"),"%"+id+"%"));
+            }
+            if(null != phone){
+                predicates.add(criteriaBuilder.like(root.get("phone"),"%"+phone+"%"));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+        List<User> userList = userDao.findAll(querySpecifi);
+        return new Result(userList);
     }
 
 }
