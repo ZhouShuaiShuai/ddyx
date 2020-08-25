@@ -1,5 +1,6 @@
 package org.game.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
@@ -57,10 +58,38 @@ public class GameController {
     }
 
     @GetMapping("getGameInfo")
-    @ApiOperation(value = "获取游戏信息{后台}")
+    @ApiOperation(value = "获取游戏信息【原接口。不要使用】")
     public Result getGameInfo(HttpServletRequest req){
         User user = UserUtil.getUserByReq(req, userDao);
         return gameService.getGameInfo(user);
+    }
+
+    @GetMapping("getGameInfoH")
+    @ApiOperation(value = "获取游戏信息{后台}")
+    public Result getGameInfoH(){
+        return gameService.getGameInfoH();
+    }
+
+    @GetMapping("getGameInfoQ")
+    @ApiOperation(value = "获取游戏信息{前台}")
+    public Result getGameInfoQ(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        return gameService.getGameInfoQ(user);
+    }
+
+    @GetMapping("getUserBillInfo")
+    @ApiOperation(value = "获取当前用户押注信息")
+    public Result getUserBillInfo(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        return new Result(new LinkedHashMap<String,Object>(){{
+            if(BittingValue.betMap.get(user.getId())!=null){
+                put("当前用户押注信息", JSON.toJSONString(BittingValue.betMap.get(user.getId())));
+                put("当前用户投注额",((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
+            }else{
+                put("当前用户押注信息",null);
+                put("当前用户投注额",null);
+            }
+        }});
     }
 
     @GetMapping("endCom")

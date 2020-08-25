@@ -46,4 +46,8 @@ public class YeBill {
         this.balance = user.getMoney();
     }
 
+    public Long getCreateDate(){
+        return createDate.getTime();
+    }
+
 }

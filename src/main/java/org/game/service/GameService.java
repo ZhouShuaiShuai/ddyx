@@ -48,6 +48,9 @@ public class GameService {
         //把投注金额加入到计算的map中
         BittingValue.betMap.put(user.getId(),betMap);
 
+        //加到虚拟的奖金池中
+        BittingValue.moneyPool = BittingValue.moneyPool+(betMap.values().stream().mapToInt(c -> c).sum());
+
         //从用户余额中减去该用户这一把的投注金额，然后添加到账单。如果同一把该用户继续投注则也是加入到该账单中
         user.setMoney(user.getMoney().subtract(money));
         userDao.saveAndFlush(user);
@@ -72,6 +75,45 @@ public class GameService {
     public Game initGame(Game game){
         this.startCom();
         return gameDao.save(game);
+    }
+
+    public Result getGameInfoQ(User user){
+        List<Game> games = gameDao.find20Game();
+        Game game = new Game(BittingValue.game);
+
+        //奖金池设置
+        Integer moneyPool = (MD5.random.nextInt(10)+1) *
+                (MD5.random.nextInt(9)+1) *
+                (MD5.random.nextInt(8)+1) *
+                (100-game.getReTime())*MD5.random.nextInt(5);
+
+
+        while (moneyPool < BittingValue.moneyPool){
+            moneyPool = moneyPool*(MD5.random.nextInt(4)+1);
+        }
+        game.setJackpot(new BigDecimal(moneyPool));
+        BittingValue.moneyPool = moneyPool;
+
+        //设置中奖金额为用户中奖金额
+        for(Game userGame :games){
+            userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
+        }
+
+        return new Result(new LinkedHashMap<String,Object>(){{
+            put("当前游戏信息",game);
+            put("最近二十次游戏记录",games);
+            put("当前用户信息",user);
+        }});
+    }
+
+    public Result getGameInfoH(){
+        Game resultGame = new Game(BittingValue.game);
+        List<Game> games = gameDao.find20Game();
+
+        return new Result(new LinkedHashMap<String,Object>(){{
+            put("当前游戏信息",resultGame);
+            put("最近二十次游戏记录",games);
+        }});
     }
 
     public Result getGameInfo(User user){

@@ -77,4 +77,56 @@
 
   </dependencies>
 
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <version>1.8.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>assemble</goal>
+              <goal>generate-daemons</goal>
+            </goals>
+            <configuration>
+              <repositoryLayout>flat</repositoryLayout>
+              <repositoryName>lib</repositoryName>
+              <binFolder>bin</binFolder>
+              <configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
+              <configurationDirectory>resources</configurationDirectory>
+              <copyConfigurationDirectory>true</copyConfigurationDirectory>
+              <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+              <useWildcardClassPath>true</useWildcardClassPath>
+              <assembleDirectory>${project.build.directory}/ddyx</assembleDirectory>
+              <extraJvmArguments>-Xms768m -Xmx1024m -XX:PermSize=128m
+                -XX:MaxPermSize=256m -XX:NewSize=192m -XX:MaxNewSize=384m
+              </extraJvmArguments>
+              <platforms>
+                <platform>windows</platform>
+                <platform>unix</platform>
+              </platforms>
+              <programs>
+                <program>
+                  <mainClass>org.game.App</mainClass>
+                  <name>run</name>
+                </program>
+              </programs>
+              <daemons>
+                <daemon>
+                  <jvmSettings>
+                    <initialMemorySize>768M</initialMemorySize>
+                    <maxMemorySize>1024M</maxMemorySize>
+                    <maxStackSize>128M</maxStackSize>
+                  </jvmSettings>
+                </daemon>
+              </daemons>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

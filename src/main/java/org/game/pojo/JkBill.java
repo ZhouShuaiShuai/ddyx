@@ -41,4 +41,8 @@ public class JkBill {
         this.userId = user.getId();
         this.balance = user.getJkmoney();
     }
+
+    public Long getCreateDate(){
+        return createDate.getTime();
+    }
 }

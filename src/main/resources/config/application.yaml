@@ -6,7 +6,7 @@ spring:
   datasource:
     platform: mysql                        # 指定数据源类型
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: zhouyf
+    username: root
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://127.0.0.1:3306/ddyx?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
