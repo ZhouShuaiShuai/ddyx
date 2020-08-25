@@ -97,6 +97,10 @@ public class GameService {
         //设置中奖金额为用户中奖金额
         for(Game userGame :games){
             userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
+
+            List<UserInfo> userInfos = userInfoDao.findAllByGameIdOrderByYlDesc(game.getId());
+            userGame.setWinNum(userInfos.size());
+            userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
         }
 
         return new Result(new LinkedHashMap<String,Object>(){{
@@ -204,6 +208,7 @@ public class GameService {
         BittingValue.falg = true;
         Set<Integer> userIds = BittingValue.betMap.keySet();
 
+        //真实赢的人
         List<UserInfo> winList = UserUtil.init(checkNum,endGame.getId());
 
         Integer winNum = 0; //游戏赢的人数
@@ -232,13 +237,17 @@ public class GameService {
                         userInfo.setNum(checkNum);
                         userInfo.setTz(betMap.get(num));
                         userInfo.setHl(Integer.parseInt(money.toString()));
+                        userInfo.setYl(userInfo.getHl()-userInfo.getTz());
                     }
                 }
 
                 //累加每个数字投注的金额到jeMap中
                 BittingValue.jeMap.put(num,betMap.get(num)+BittingValue.jeMap.get(num));
             }
-            winList.add(userInfo);
+            if(userInfo.getYl()>=0){
+                winList.add(userInfo);
+            }
+
         }
 
         endGame.setWinNum(winNum);
@@ -262,8 +271,12 @@ public class GameService {
 
     public Result findGameState(Integer gameId){
         Game game = gameDao.findById(gameId).get();
-        if(game.getReTime()<=0 && !game.getId().equals(BittingValue.game.getId())) return new Result(false);   //gameId这把游戏结束了
-        else return new Result(true);   //gameId这把游戏还没有结束
+        if(game.getReTime()<=0 && !game.getId().equals(BittingValue.game.getId())){
+        return new Result(false);   //gameId这把游戏结束了
+        }
+        else{
+            return new Result(true);   //gameId这把游戏还没有结束
+        }
     }
 
     public Result findBettingValue(Integer gameId,Integer userId,Integer number) {
@@ -276,7 +289,9 @@ public class GameService {
                 returnMap.put("投注号码盈利", Magnification.getPlByNum(number) * betMap.get(number));
             }
             return new Result(returnMap);
-        }else return new Result(null);
+        }else {
+            return new Result(null);
+        }
     }
 
     //开始计算
