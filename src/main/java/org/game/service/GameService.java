@@ -98,7 +98,7 @@ public class GameService {
         for(Game userGame :games){
             userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
 
-            List<UserInfo> userInfos = userInfoDao.findAllByGameId(game.getId());
+            List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
             userGame.setWinNum(userInfos.size());
             userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
         }
