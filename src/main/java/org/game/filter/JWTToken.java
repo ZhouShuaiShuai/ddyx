@@ -20,7 +20,7 @@ public class JWTToken {
     public static String buildJwt(User user) {
 
         //设置过期时间6小时
-        long time = System.currentTimeMillis() + 6 * 60 * 60 * 1000;
+        long time = System.currentTimeMillis() + 60 * 60 * 1000;
         String jwt = Jwts
                 .builder()
                 //SECRET_KEY是加密算法对应的密钥，这里使用额是HS256加密算法
@@ -51,7 +51,7 @@ public class JWTToken {
         }
     }
 
-    /*public static boolean isJwtValid(String jwt, User user) throws Exception {
+    public static boolean isJwtValid(String jwt, User user) throws Exception {
         if (!userMap.get(user.getId()).equals(jwt)) {
             throw new Exception("用户已在其它设备登录！");
         }
@@ -76,9 +76,9 @@ public class JWTToken {
         } catch (Exception e) {
                 throw new Exception("用户信息有误！");
         }
-    }*/
+    }
 
-    public static boolean isJwtValid(String jwt, User user) {
+    /*public static boolean isJwtValid(String jwt, User user) {
         try {
 
             //解析JWT字符串中的数据，并进行最基础的验证
@@ -106,7 +106,7 @@ public class JWTToken {
             }
         }
         return true;
-    }
+    }*/
 
 
 }

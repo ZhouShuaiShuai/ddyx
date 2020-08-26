@@ -90,15 +90,15 @@ public class UserService {
         return new Result(userDao.saveAndFlush(user));
     }
 
-    public Result findUserByIdAndPhone(Integer id,String phone){
+    public Result findUserByIdAndPhone(String value){
         Specification querySpecifi = (Specification<User>) (root, criteriaQuery, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
-            if(null != id){
-                predicates.add(criteriaBuilder.equal(root.get("id"),id));
+            if(null != value && value.length() == 6){
+                predicates.add(criteriaBuilder.equal(root.get("id"),value));
             }
-            if(null != phone){
-                predicates.add(criteriaBuilder.like(root.get("phone"),"%"+phone+"%"));
+            if(null != value && value.length() == 11){
+                predicates.add(criteriaBuilder.like(root.get("phone"),value));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };

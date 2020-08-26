@@ -66,6 +66,9 @@ public class JudgeZuulRequest {
                         || path.contains("/webjars/")
                         || path.contains("/v2/")
                         || path.contains("/swagger-resources")
+                        || path.contains("/game/getGameInfoQ")
+                        || path.contains("/ranking/findRanking")
+                        || path.contains("/game/findGameState")
                 )
                     filterChain.doFilter(servletRequest, servletResponse);
                 else {
@@ -77,17 +80,17 @@ public class JudgeZuulRequest {
                         if (user == null)
                             req.getRequestDispatcher("/user/userIsNull").forward(req, servletResponse);
 
-//                        try {
+                        try {
                             if (!JWTToken.isJwtValid(xAuthToken, user)) {
                                 log.error("用户登录超时！");
                                 req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
                             } else {
                                 filterChain.doFilter(servletRequest, servletResponse);
                             }
-//                        } catch (Exception e) {
-//                            log.error(e.getMessage());
-//                            req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
-//                        }
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                            req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
+                        }
                     }
                 }
             }

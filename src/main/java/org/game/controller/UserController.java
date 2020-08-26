@@ -140,8 +140,11 @@ public class UserController extends UserErrorController {
 
     @GetMapping("findUserByIdAndPhone")
     @ApiOperation(value = "根据id和电话模糊匹配")
-    public Result findUserByIdAndPhone(Integer id,String phone){
-        return userService.findUserByIdAndPhone(id,phone);
+    public Result findUserByIdAndPhone(String value){
+        if(value!=null && (value.length()== 6 || value.length()==11) ){
+            return userService.findUserByIdAndPhone(value);
+        }
+        return new Result(null);
     }
 
 

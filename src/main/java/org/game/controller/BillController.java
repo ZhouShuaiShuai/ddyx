@@ -62,6 +62,7 @@ public class BillController {
         User user = UserUtil.getUserByReq(req, userDao);
         if (!user.getJkpwd().equals(MD5.getMd5(pwd))) return new Result("密码错误！;", null);
         if (money.compareTo(user.getJkmoney()) > 0) return new Result("小金库余额不足;", null);
+        if (user.getId().equals(otherUserId)) return new Result("不能给自己转账！;", null);
         return billService.transferMoney(user, otherUserId, money);
     }
 

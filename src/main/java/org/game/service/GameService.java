@@ -96,8 +96,10 @@ public class GameService {
 
         //设置中奖金额为用户中奖金额
         for(Game userGame :games){
-//            userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
-
+            //设置中奖金额为用户中奖金额
+            if(user!=null)
+            userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
+            else userGame.setWinMoney(new BigDecimal(0));
             List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
             userGame.setWinNum(userInfos.size());
             userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
@@ -106,6 +108,7 @@ public class GameService {
         return new Result(new LinkedHashMap<String,Object>(){{
             put("当前游戏信息",game);
             put("最近二十次游戏记录",games);
+            if(user!=null)
             put("当前用户信息",user);
         }});
     }
@@ -321,7 +324,9 @@ public class GameService {
             return new Result(new LinkedHashMap<String,Object>(){
                 {
                     put("当前用户押注信息", JSON.toJSONString(BittingValue.betMap.get(user.getId())));
+                    if(BittingValue.betMap.get(user.getId())!=null){
                     put("当前用户投注额", ((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
+                    }
                     put("当前剩余时间",BittingValue.game.getReTime());
                 }});
         }else {
