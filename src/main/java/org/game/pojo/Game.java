@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * 游戏
  */
-@Table(name = "game")
+@Table(name = "game" , indexes = {@Index(name = "game_id",  columnList="id", unique = true)})
 @Entity
 @Data
 public class Game {
@@ -42,7 +42,7 @@ public class Game {
 
     private String numbers; //组成中奖号码的数字
 
-    private BigDecimal winMoney;    //没把赢的奖金
+    private BigDecimal winMoney;    //每把赢的奖金
 
     public Game(){
         startTime = new Date();

@@ -95,7 +95,7 @@ public class UserService {
 
             List<Predicate> predicates = new ArrayList<>();
             if(null != id){
-                predicates.add(criteriaBuilder.like(root.get("id"),"%"+id+"%"));
+                predicates.add(criteriaBuilder.equal(root.get("id"),id));
             }
             if(null != phone){
                 predicates.add(criteriaBuilder.like(root.get("phone"),"%"+phone+"%"));

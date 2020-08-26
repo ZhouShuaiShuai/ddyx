@@ -10,7 +10,7 @@ import javax.persistence.*;
  * 模拟的用户数据
  */
 @Data
-@Table(name = "userInfo")
+@Table(name = "userInfo" , indexes = {@Index(name = "game_id",  columnList="gameId", unique = true)})
 @Entity
 public class UserInfo {
 

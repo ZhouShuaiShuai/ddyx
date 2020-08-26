@@ -89,14 +89,14 @@ public class GameService {
 
 
         while (moneyPool < BittingValue.moneyPool){
-            moneyPool = moneyPool*(MD5.random.nextInt(4)+1);
+            moneyPool = moneyPool*(MD5.random.nextInt(4)+2);
         }
         game.setJackpot(new BigDecimal(moneyPool));
         BittingValue.moneyPool = moneyPool;
 
         //设置中奖金额为用户中奖金额
         for(Game userGame :games){
-            userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
+//            userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
 
             List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
             userGame.setWinNum(userInfos.size());
@@ -327,13 +327,24 @@ public class GameService {
         }else {
             Game game = gameDao.findById(gameId).get();
             Betting betting = bettingDao.findFirstByUserIdAndGameId(user.getId(),gameId);
-            Map<Integer, Integer> betMap = (Map<Integer, Integer>) JSON.parse(betting.getBettingMap());
-            return new Result(new LinkedHashMap<String,Object>(){
-                {
-                    put("当前用户押注信息", betting.getBettingMap());
-                    put("当前用户投注额", betMap.values().stream().mapToInt(((x) -> x)).sum());
-                    put("当前剩余时间",game.getReTime());
-                }});
+            if(null!=betting) {
+                Map<Integer, Integer> betMap = (Map<Integer, Integer>) JSON.parse(betting.getBettingMap());
+                return new Result(new LinkedHashMap<String, Object>() {
+                    {
+                        put("当前用户押注信息", betting.getBettingMap());
+                        put("当前用户投注额", betMap.values().stream().mapToInt(((x) -> x)).sum());
+                        put("当前剩余时间", game.getReTime());
+                    }
+                });
+            }else{
+                return new Result(new LinkedHashMap<String, Object>() {
+                    {
+                        put("当前用户押注信息", null);
+                        put("当前用户投注额", null);
+                        put("当前剩余时间", game.getReTime());
+                    }
+                });
+            }
         }
 
     }
