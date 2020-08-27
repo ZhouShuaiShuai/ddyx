@@ -75,21 +75,25 @@ public class JudgeZuulRequest {
                     if (StringUtils.isEmpty(xAuthToken)) {
                         log.error("请登录后访问！");
                         req.getRequestDispatcher("/user/isNotLogin").forward(req, servletResponse);
+                        return;
                     } else {
                         User user = JWTToken.getUserFromJwt(xAuthToken);
-                        if (user == null)
+                        if (user == null) {
                             req.getRequestDispatcher("/user/userIsNull").forward(req, servletResponse);
-
+                            return;
+                        }
                         try {
                             if (!JWTToken.isJwtValid(xAuthToken, user)) {
                                 log.error("用户登录超时！");
                                 req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
+                                return;
                             } else {
                                 filterChain.doFilter(servletRequest, servletResponse);
                             }
                         } catch (Exception e) {
                             log.error(e.getMessage());
                             req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
+                            return;
                         }
                     }
                 }

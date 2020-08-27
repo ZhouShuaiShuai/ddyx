@@ -21,4 +21,5 @@ public class BettingService {
         bettingDao.saveAll(bettingList);
     }
 
+
 }

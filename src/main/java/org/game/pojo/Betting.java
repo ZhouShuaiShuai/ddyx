@@ -22,6 +22,7 @@ public class Betting {
 
     private Integer gameId;
 
+    @Column(length = 2000)
     private String bettingMap;
 
     public Betting(){}
