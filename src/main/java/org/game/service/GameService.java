@@ -78,7 +78,6 @@ public class GameService {
     }
 
     public Result getGameInfoQ(User user){
-        List<Game> games = gameDao.find20Game();
         Game game = new Game(BittingValue.game);
 
         //奖金池设置
@@ -93,18 +92,27 @@ public class GameService {
         }
         game.setJackpot(new BigDecimal(moneyPool));
         BittingValue.moneyPool = moneyPool;
+        List<Game> games;
+        if(user!=null){
+            games = gameDao.find20GameByUser(user.getId());
+            for(Game userGame :games){
+                //设置中奖金额为用户中奖金额
+                List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
+                userGame.setWinNum(userInfos.size());
+                userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+            }
 
-        //设置中奖金额为用户中奖金额
-        for(Game userGame :games){
-            //设置中奖金额为用户中奖金额
-            if(user!=null)
-            userGame.setWinMoney(yeBillDao.findYkByUserIdAAndGameId(user.getId(),userGame.getId()));
-            else userGame.setWinMoney(new BigDecimal(0));
-            List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
-            userGame.setWinNum(userInfos.size());
-            userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+        }else {
+            games = gameDao.find20Game();
+            for(Game userGame :games){
+                //设置中奖金额为用户中奖金额
+                userGame.setWinMoney(new BigDecimal(0));
+                List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
+                userGame.setWinNum(userInfos.size());
+                userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+            }
+
         }
-
         return new Result(new LinkedHashMap<String,Object>(){{
             put("当前游戏信息",game);
             put("最近二十次游戏记录",games);
@@ -259,8 +267,8 @@ public class GameService {
         endGame.setNumber(checkNum);
         while (endGame.getReTime()>0){
             try {
-                Thread.sleep(10L);
-                log.error("WAIT 10ml");
+                Thread.sleep(100L);
+                log.error("WAIT 100ml");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -306,8 +314,6 @@ public class GameService {
                     this.start();
                     falg = false;
                 }else {
-//                    log.error("sleep 1 M");
-//                    log.error(BittingValue.game.toString());
                     try {
                         Thread.sleep(3000L);
                     } catch (InterruptedException e) {

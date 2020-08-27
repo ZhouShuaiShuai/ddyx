@@ -86,14 +86,12 @@ public class JudgeZuulRequest {
                             if (!JWTToken.isJwtValid(xAuthToken, user)) {
                                 log.error("用户登录超时！");
                                 req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
-                                return;
                             } else {
                                 filterChain.doFilter(servletRequest, servletResponse);
                             }
                         } catch (Exception e) {
                             log.error(e.getMessage());
                             req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
-                            return;
                         }
                     }
                 }
