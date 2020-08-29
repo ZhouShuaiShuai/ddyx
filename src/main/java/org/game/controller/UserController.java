@@ -147,5 +147,4 @@ public class UserController extends UserErrorController {
         return new Result(null);
     }
 
-
 }

@@ -26,7 +26,7 @@ public class UserUtil {
 
     public static List<UserInfo> init(Integer num , Integer gameId ){
         List<UserInfo> list = new LinkedList<>();
-        int length = MD5.random.nextInt(180+50);
+        int length = MD5.random.nextInt(180)+50;
         for(int i = 0; i<= length ; i++){
             UserInfo userInfo = new UserInfo();
             userInfo.setUserName(UserNameUtil.getName()+"");

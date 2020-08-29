@@ -1,9 +1,7 @@
 package org.game.controller;
 
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.game.config.BittingValue;
 import org.game.dao.UserDao;
@@ -12,6 +10,7 @@ import org.game.result.Result;
 import org.game.service.GameService;
 import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +21,8 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * 提供玩游戏的接口
@@ -30,6 +31,7 @@ import java.util.Map;
 @RequestMapping(value = "game")
 @Api(tags = {"游戏接口"})
 @Slf4j
+@EnableAsync
 public class GameController {
 
     @Autowired
@@ -72,6 +74,7 @@ public class GameController {
 
     @GetMapping("getGameInfoQ")
     @ApiOperation(value = "获取游戏信息{前台}")
+//    @LoadBalanced
     public Result getGameInfoQ(HttpServletRequest req){
         User user = UserUtil.getUserByReq(req, userDao);
         return gameService.getGameInfoQ(user);

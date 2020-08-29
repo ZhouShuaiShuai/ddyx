@@ -78,41 +78,39 @@ public class GameService {
     }
 
     public Result getGameInfoQ(User user){
+        Long time = System.currentTimeMillis();
+
+
         Game game = new Game(BittingValue.game);
-
         //奖金池设置
-        Integer moneyPool = (MD5.random.nextInt(10)+1) *
-                (MD5.random.nextInt(9)+1) *
-                (MD5.random.nextInt(8)+1) *
-                (100-game.getReTime())*MD5.random.nextInt(5);
+        Integer moneyPool = BittingValue.moneyPool + (100-game.getReTime())*(MD5.random.nextInt(20)+1);
 
-
-        while (moneyPool < BittingValue.moneyPool){
-            moneyPool = moneyPool*(MD5.random.nextInt(4)+2);
-        }
         game.setJackpot(new BigDecimal(moneyPool));
         BittingValue.moneyPool = moneyPool;
+
         List<Game> games;
         if(user!=null){
-            games = gameDao.find20GameByUser(user.getId());
-            for(Game userGame :games){
-                //设置中奖金额为用户中奖金额
-                List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
-                userGame.setWinNum(userInfos.size());
-                userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
-            }
+//            games = gameDao.find20GameByUser(user.getId());
+            games = gameDao.find20Games(user.getId());
+//            for(Game userGame :games){
+//                //设置中奖金额为用户中奖金额
+//                List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
+//                userGame.setWinNum(userInfos.size());
+//                userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+//            }
 
         }else {
-            games = gameDao.find20Game();
-            for(Game userGame :games){
-                //设置中奖金额为用户中奖金额
-                userGame.setWinMoney(new BigDecimal(0));
-                List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
-                userGame.setWinNum(userInfos.size());
-                userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
-            }
+            games = gameDao.find20Games();
+//            for(Game userGame :games){
+//                //设置中奖金额为用户中奖金额
+//                userGame.setWinMoney(new BigDecimal(0));
+//                List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
+//                userGame.setWinNum(userInfos.size());
+//                userGame.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+//            }
 
         }
+        log.error("运行时长 ： "+ (System.currentTimeMillis() - time));
         return new Result(new LinkedHashMap<String,Object>(){{
             put("当前游戏信息",game);
             put("最近二十次游戏记录",games);
@@ -215,17 +213,18 @@ public class GameService {
         log.error("【GAMEID】  "+BittingValue.game.getId());
 
         Game endGame = BittingValue.game;
+        Map<Integer,Map<Integer, Integer>> endBettionMap = BittingValue.betMap;
+
         endGame.setWinMoney(new BigDecimal(BittingValue.ylMap.get(checkNum)));
         BittingValue.falg = true;
-        Set<Integer> userIds = BittingValue.betMap.keySet();
-
+        Set<Integer> userIds = endBettionMap.keySet();
         //真实赢的人
         List<UserInfo> winList = UserUtil.init(checkNum,endGame.getId());
 
         Integer winNum = 0; //游戏赢的人数
         for(Integer userId : userIds){
             UserInfo userInfo = new UserInfo();
-            Map<Integer, Integer> betMap = BittingValue.betMap.get(userId);
+            Map<Integer, Integer> betMap = endBettionMap.get(userId);
             for(Integer num : betMap.keySet()){
                 if(checkNum.equals(num)){
                     winNum++;
@@ -253,7 +252,7 @@ public class GameService {
                 }
 
                 //累加每个数字投注的金额到jeMap中
-                BittingValue.jeMap.put(num,betMap.get(num)+BittingValue.jeMap.get(num));
+//                BittingValue.jeMap.put(num,betMap.get(num)+BittingValue.jeMap.get(num));
             }
             if(userInfo.getYl()!= null && userInfo.getYl()>=0){
                 winList.add(userInfo);
@@ -265,16 +264,16 @@ public class GameService {
 
         //更新结束游戏的数据
         endGame.setNumber(checkNum);
-        while (endGame.getReTime()>0){
-            try {
-                Thread.sleep(100L);
-                log.error("WAIT 100ml");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        endGame.setReTime(BittingValue.game.getReTime());
+//        while (endGame.getReTime()>0){
+//            try {
+//                Thread.sleep(100L);
+//                log.error("WAIT 100ml");
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        endGame.setReTime(BittingValue.game.getReTime());
+        endGame.setReTime(0);
         gameDao.saveAndFlush(endGame);
         userInfoDao.saveAll(winList);
         return new Result(BittingValue.game);

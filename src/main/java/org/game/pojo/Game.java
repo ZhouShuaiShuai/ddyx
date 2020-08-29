@@ -96,37 +96,14 @@ public class Game {
             num3 = number - num1 - num2;
             while (num3>9){
                 num3 --;
-                if(num2<9) num2++;
-
-                if(num1<9) num1 ++;
+                if(num2<9){
+                    num2++;
+                }else if(num1<9) {
+                    num1 ++;
+                }
             }
             this.numbers = num1+","+num2+","+num3;
         }
-    }
-
-    public static void main(String[] args) {
-        Integer number = 24;
-        Integer num1,num2,num3;
-        if (number <= 10) {
-            num1 = MD5.random.nextInt(number);
-        } else {
-            num1 = MD5.random.nextInt(10);
-        }
-
-        if (number - num1 >= 10) {
-            num2 = MD5.random.nextInt(10);
-        } else {
-            num2 = MD5.random.nextInt(number - num1);
-        }
-        num3 = number - num1 - num2;
-        while (num3>9){
-            num3 --;
-            if(num2<9) num2++;
-
-            else if(num1<9) num1++;
-        }
-
-        System.out.println(num1+","+num2+","+num3);
     }
 
 }

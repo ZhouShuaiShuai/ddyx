@@ -1,13 +1,17 @@
 package org.game.result;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 
 /**
  * @author Zhouyf
  * @Data 2020-07-21  12:17
  */
-@Data
+//@Data
+    @Getter
+    @Setter
 public class PageResult extends Result {
 
     public PageResult(Object obj){

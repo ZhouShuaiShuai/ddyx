@@ -1,6 +1,7 @@
 package org.game.pojo;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
  * 模拟的用户数据
  */
 @Data
-@Table(name = "userInfo" , indexes = {@Index(name = "game_id",  columnList="gameId", unique = true)})
+@Table(name = "userInfo" , indexes = {@Index(name = "game_id",  columnList="gameId")})
 @Entity
 public class UserInfo {
 

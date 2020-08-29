@@ -29,4 +29,20 @@ public interface GameDao extends JpaRepository<Game, Integer> {
             nativeQuery = true)
     List<Game> find20GameByUser(Integer userId);
 
+
+    @Query(value = "SELECT g.id, sum(ui.hl) as jackpot ,count(ui.id) as win_num,g.number,g.start_time,g.numbers,g.re_time,g.end_time, sum(y.game_money) as win_money FROM game g " +
+            "LEFT JOIN user_info ui on g.id = ui.game_id  " +
+            "LEFT JOIN yebill y on g.id = y.game_id and y.user_id = ?1 " +
+            "where re_time < 1 " +
+            "group by id desc limit 20 ",
+            nativeQuery = true)
+    List<Game> find20Games(Integer userId);
+
+
+    @Query(value = "SELECT g.id,g.number,g.start_time,g.numbers,g.re_time,g.end_time,'0' as win_money, sum(ui.hl) as jackpot ,count(ui.id) as win_num FROM game g " +
+            "LEFT JOIN user_info ui on g.id = ui.game_id " +
+            "where re_time < 1 " +
+            "group by id desc limit 20 ",nativeQuery = true )
+    List<Game> find20Games();
+
 }
