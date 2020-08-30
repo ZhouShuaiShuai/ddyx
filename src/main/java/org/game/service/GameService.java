@@ -83,7 +83,7 @@ public class GameService {
 
         Game game = new Game(BittingValue.game);
         //奖金池设置
-        Integer moneyPool = BittingValue.moneyPool + (100-game.getReTime())*(MD5.random.nextInt(20)+1);
+        Integer moneyPool = BittingValue.moneyPool + (100-game.getReTime())*(MD5.random.nextInt(20)+200);
 
         game.setJackpot(new BigDecimal(moneyPool));
         BittingValue.moneyPool = moneyPool;
@@ -245,7 +245,8 @@ public class GameService {
                         userInfo.setHeadImg(user.getHeadImg());
                         userInfo.setGameId(endGame.getId());
                         userInfo.setNum(checkNum);
-                        userInfo.setTz(betMap.get(num));
+//                        userInfo.setTz(betMap.get(num));
+                        userInfo.setTz(betMap.values().stream().mapToInt(c -> c).sum());
                         userInfo.setHl(Integer.parseInt(money.toString()));
                         userInfo.setYl(userInfo.getHl()-userInfo.getTz());
                     }

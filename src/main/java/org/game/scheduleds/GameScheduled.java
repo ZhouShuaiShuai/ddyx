@@ -62,11 +62,14 @@ public class GameScheduled {
     @Scheduled(initialDelay=80000, fixedRate=90000)
     public void endGame(){
 //        while (!BittingValue.falg){
-            //如果90秒过了 还没有请求结束接口就自动结束，选择一个赢率最大的
+        while (true){
             Integer num = MD5.random.nextInt(28);
             if(BittingValue.ylMap.get(num)!=null && BittingValue.ylMap.get(num).compareTo(BittingValue.minRate)>=0){
                 gameService.end(num);
+                break;
             }
+        }
+            //如果90秒过了 还没有请求结束接口就自动结束，选择一个赢率最大的
 //        }
         BittingValue.falg = false;
     }

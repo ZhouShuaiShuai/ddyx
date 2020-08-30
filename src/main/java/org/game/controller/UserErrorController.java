@@ -26,13 +26,19 @@ public class UserErrorController {
     @GetMapping("userError")
     @ApiIgnore
     public Result userError() {
-        return new Result("用户已在其它地方登录！", "USERERROR");
+        return new Result("用户登录超时！", "USERERROR");
     }
 
     @GetMapping("userIsNull")
     @ApiIgnore
     public Result userIsNull() {
         return new Result("用户信息有误！", "USERISNULL");
+    }
+
+    @GetMapping("otherLogin")
+    @ApiIgnore
+    public Result otherLogin(){
+        return new Result("用户已在其它设备登录！" ,"OTHERLOGIN");
     }
 
 }

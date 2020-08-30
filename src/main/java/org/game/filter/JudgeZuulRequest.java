@@ -59,42 +59,47 @@ public class JudgeZuulRequest {
                 filterChain.doFilter(servletRequest, servletResponse);
                 log.error("access-control-request-headers is NULL!");
             } else {
-//                if (path.contains("/user/login")
-//                        || path.contains("/user/register")
-//                        || path.contains("/swagger-ui.html")
-//                        || path.contains("/favicon.ico")
-//                        || path.contains("/webjars/")
-//                        || path.contains("/v2/")
-//                        || path.contains("/swagger-resources")
-//                        || path.contains("/game/getGameInfoQ")
-//                        || path.contains("/ranking/findRanking")
-//                        || path.contains("/game/findGameState")
-//                )
+                if (path.contains("/user/login")
+                        || path.contains("/user/register")
+                        || path.contains("/swagger-ui.html")
+                        || path.contains("/favicon.ico")
+                        || path.contains("/webjars/")
+                        || path.contains("/v2/")
+                        || path.contains("/swagger-resources")
+                        || path.contains("/game/getGameInfoQ")
+                        || path.contains("/ranking/findRanking")
+                        || path.contains("/game/findGameState")
+                )
                     filterChain.doFilter(servletRequest, servletResponse);
-//                else {
-//                    if (StringUtils.isEmpty(xAuthToken)) {
-//                        log.error("请登录后访问！");
-//                        req.getRequestDispatcher("/user/isNotLogin").forward(req, servletResponse);
-//                        return;
-//                    } else {
-//                        User user = JWTToken.getUserFromJwt(xAuthToken);
-//                        if (user == null) {
-//                            req.getRequestDispatcher("/user/userIsNull").forward(req, servletResponse);
-//                            return;
-//                        }
-//                        try {
-//                            if (!JWTToken.isJwtValid(xAuthToken, user)) {
-//                                log.error("用户登录超时！");
-//                                req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
-//                            } else {
-//                                filterChain.doFilter(servletRequest, servletResponse);
-//                            }
-//                        } catch (Exception e) {
-//                            log.error(e.getMessage());
-//                            req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
-//                        }
-//                    }
-//                }
+                else {
+                    if (StringUtils.isEmpty(xAuthToken)) {
+                        log.error("请登录后访问！");
+                        req.getRequestDispatcher("/user/isNotLogin").forward(req, servletResponse);
+                        return;
+                    } else {
+                        User user = JWTToken.getUserFromJwt(xAuthToken);
+                        if (user == null) {
+                            req.getRequestDispatcher("/user/userIsNull").forward(req, servletResponse);
+                            return;
+                        }
+                        try {
+                            if(!JWTToken.userMap.get(user.getId()).equals(xAuthToken)){
+                                log.error("用户已在其它设备登录！");
+                                req.getRequestDispatcher("/user/otherLogin").forward(req, servletResponse);
+                                return;
+                            }
+                            if (!JWTToken.isJwtValid(xAuthToken, user)) {
+                                log.error("用户登录超时！");
+                                req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
+                            } else {
+                                filterChain.doFilter(servletRequest, servletResponse);
+                            }
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                            req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
+                        }
+                    }
+                }
             }
         }
 

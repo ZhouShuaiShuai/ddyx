@@ -52,9 +52,6 @@ public class JWTToken {
     }
 
     public static boolean isJwtValid(String jwt, User user) throws Exception {
-        if (!userMap.get(user.getId()).equals(jwt)) {
-            throw new Exception("用户已在其它设备登录！");
-        }
         try {
             //解析JWT字符串中的数据，并进行最基础的验证
             Claims claims = Jwts.parser()
@@ -74,7 +71,7 @@ public class JWTToken {
             //在解析JWT字符串时，如果密钥不正确，将会解析失败，抛出SignatureException异常，说明该JWT字符串是伪造的
             //在解析JWT字符串时，如果‘过期时间字段’已经早于当前时间，将会抛出ExpiredJwtException异常，说明本次请求已经失效
         } catch (Exception e) {
-                throw new Exception("用户信息有误！");
+                throw new Exception("用户登录超时！");
         }
     }
 

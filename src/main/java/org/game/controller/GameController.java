@@ -43,11 +43,17 @@ public class GameController {
     @ApiOperation(value = "用户投注")
     public Result betting(HttpServletRequest req, @RequestParam(value = "nums")List<Integer> nums,@RequestParam(value = "counts")List<Integer> counts){
         if(nums.size()<=0 || counts.size() <=0 || nums.size()!=counts.size()) return new Result("投注数量为空！或者不一致！",null);
+        for(Integer count : counts){
+            if(count > 10000000){
+                return new Result("投注金额不能大于一千万",null);
+            }
+        }
+
         Integer count = counts.stream().mapToInt(c -> c).sum();
         User user = UserUtil.getUserByReq(req, userDao);
         if(new BigDecimal(count).compareTo(user.getMoney()) > 0) return new Result("余额不足！",null);
         Map<Integer, Integer> betMap = new LinkedHashMap<>();
-                for(int i =0;i<nums.size();i++){
+        for(int i =0;i<nums.size();i++){
             betMap.put(nums.get(i),counts.get(i));
         }
         return gameService.betting(user,betMap);
