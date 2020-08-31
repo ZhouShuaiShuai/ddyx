@@ -48,6 +48,9 @@ public class GameController {
                 return new Result("投注金额不能大于一千万",null);
             }
         }
+        if(BittingValue.game.getReTime()<15){
+            return new Result("投注已截至！",null);
+        }
 
         Integer count = counts.stream().mapToInt(c -> c).sum();
         User user = UserUtil.getUserByReq(req, userDao);

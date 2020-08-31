@@ -22,7 +22,7 @@ public enum Magnification {
     ELEVEN(11,15),
     TWELVE(12,14),
     THIRTEEN(13,13),
-    FOURTEEN(14,12),
+    FOURTEEN(14,13),
     FIFTEEN(15,14),
     SIXTEEN(16,15),
     SEVENTEEN(17,16),
