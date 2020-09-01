@@ -51,7 +51,8 @@ public class GameScheduled {
         Game game = new Game();
         BittingValue.game = gameService.initGame(game);
         log.error("STARTING! NEW GAME!");
-
+        //投入自动押注的金额
+        bettingService.model();
 
 //        gameService.saveGame();
     }

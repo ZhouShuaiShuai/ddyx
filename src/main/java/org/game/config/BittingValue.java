@@ -2,6 +2,7 @@ package org.game.config;
 
 import com.alibaba.fastjson.JSON;
 import org.game.pojo.Betting;
+import org.game.pojo.BettingModel;
 import org.game.pojo.Game;
 import org.game.service.BettingService;
 
@@ -15,6 +16,10 @@ import java.util.concurrent.Executors;
  */
 
 public class BittingValue {
+
+    public static Map<Integer,BettingModel> bettingModelList;  //启动的用户自动投注
+
+    public static Map<Integer,Map<String, Integer>> modelCon;   //用户押注配置
 
     public static Integer moneyPool = 0; //奖金池
 

@@ -1,6 +1,5 @@
 package org.game.dao;
 
-import io.swagger.models.auth.In;
 import org.game.pojo.Betting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
