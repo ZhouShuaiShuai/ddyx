@@ -39,6 +39,8 @@ public class GameService {
     @Autowired
     private UserInfoDao userInfoDao;
 
+
+
     @Transactional(rollbackFor = Exception.class)
     public synchronized Result betting(User user, Map<Integer, Integer> betMap){
         //该用户这一把的投注金额

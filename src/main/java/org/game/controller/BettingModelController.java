@@ -13,6 +13,7 @@ import org.game.service.BettingModelService;
 import org.game.util.StringUtils;
 import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,8 +86,8 @@ public class BettingModelController {
     @GetMapping("addBettingModel")
     @ApiOperation(value = "添加投注模式")
     public Result addBettingModel(@RequestParam(value = "name")String name,
-                                  @RequestParam(value = "winModelId")Integer winModelId,
-                                  @RequestParam(value = "loserModelId")Integer loserModelId,
+                                  @RequestParam(value = "winModelId" ,required = false)Integer winModelId,
+                                  @RequestParam(value = "loserModelId" ,required = false)Integer loserModelId,
                                   @RequestParam(value = "nums") List<Integer> nums,
                                   @RequestParam(value = "counts")List<Integer> counts ,
                                   HttpServletRequest req){
@@ -109,8 +110,8 @@ public class BettingModelController {
     @ApiOperation(value = "修改投注模式")
     public Result updBettingModel(
                                 @RequestParam(value = "name")String name,
-                                @RequestParam(value = "winModelId")Integer winModelId,
-                                @RequestParam(value = "loserModelId")Integer loserModelId,
+                                @RequestParam(value = "winModelId" ,required = false)Integer winModelId,
+                                @RequestParam(value = "loserModelId" ,required = false)Integer loserModelId,
                                 @RequestParam(value = "modelId")Integer modelId,
                                   @RequestParam(value = "nums") List<Integer> nums, @RequestParam(value = "counts")List<Integer> counts , HttpServletRequest req){
         if(nums.size()<=0 || counts.size() <=0 || nums.size()!=counts.size()) return new Result("投注数量为空！或者不一致！",null);

@@ -5,6 +5,8 @@ import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.game.config.BittingValue;
 import org.game.dao.BettingDao;
+import org.game.dao.BettingModelDao;
+import org.game.dao.GameDao;
 import org.game.dao.UserDao;
 import org.game.pojo.Betting;
 import org.game.pojo.BettingModel;
@@ -28,8 +30,13 @@ public class BettingService {
 
     @Autowired
     private BettingDao bettingDao;
-
+    @Autowired
+    private GameDao gameDao;
+    @Autowired
     private GameService gameService;
+
+    @Autowired
+    private BettingModelDao bettingModelDao;
 
     @Autowired
     private UserDao userDao;
@@ -38,10 +45,54 @@ public class BettingService {
         bettingDao.saveAll(bettingList);
     }
 
+    //没把结束的时候重置投注模式
+    public void endModel(){
+        Map<Integer, BettingModel> bettingModelMap = BittingValue.bettingModelList;
+        Map<Integer,Map<String, Integer>> modelCon = BittingValue.modelCon;
+        if(bettingModelMap==null ||bettingModelMap.isEmpty()){
+            return;
+        }
+        for(Integer userId : bettingModelMap.keySet()){
+            Map<String,Integer> con = modelCon.get(userId);
+            if(con.isEmpty()){
+                log.error("当前用户没有自动押注配置信息！ userId :"+ userId);
+                BittingValue.modelCon.remove(userId);
+                BittingValue.bettingModelList.remove(userId);
+            }
+
+            BettingModel bettingModel = bettingModelMap.get(userId);
+            User user = userDao.getOne(userId);
+            if(con.get("max") == null || user.getMoney().compareTo(new BigDecimal(con.get("max")))<0){
+                if(con.get("min") == null || user.getMoney().compareTo(new BigDecimal(con.get("min")))>0){
+                    Integer money = gameDao.getLastGameMoney(userId);
+                    if(money==null){
+                        return;
+                    }else if(money>0){
+                        BettingModel model = bettingModelDao.getOne(bettingModel.getWinModelId());
+                        if(model!=null){
+                            BittingValue.bettingModelList.put(userId,model);
+                        }else {
+                            BittingValue.modelCon.remove(userId);
+                            BittingValue.bettingModelList.remove(userId);
+                        }
+                    } else {
+                        BettingModel model = bettingModelDao.getOne(bettingModel.getLoserModelId());
+                        if(model!=null){
+                            BittingValue.bettingModelList.put(userId,model);
+                        }else {
+                            BittingValue.modelCon.remove(userId);
+                            BittingValue.bettingModelList.remove(userId);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void model(){
         Map<Integer, BettingModel> bettingModelMap = BittingValue.bettingModelList;
         Map<Integer,Map<String, Integer>> modelCon = BittingValue.modelCon;
-        if(bettingModelMap.isEmpty()){
+        if(bettingModelMap==null || bettingModelMap.isEmpty()){
             return;
         }
         for(Integer userId : bettingModelMap.keySet()){
@@ -69,6 +120,7 @@ public class BettingService {
                                 put("min", con.get("min"));
                                 put("num", num2);
                             }};
+                            modelCon.put(userId,map);
                             return;
                         }
                     }

@@ -95,6 +95,7 @@ public class JudgeZuulRequest {
                                 filterChain.doFilter(servletRequest, servletResponse);
                             }
                         } catch (Exception e) {
+                            e.printStackTrace();
                             log.error(e.getMessage());
                             req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
                         }

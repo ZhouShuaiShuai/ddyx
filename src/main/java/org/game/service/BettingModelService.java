@@ -1,5 +1,6 @@
 package org.game.service;
 
+import com.alibaba.fastjson.JSON;
 import org.game.config.BittingValue;
 import org.game.dao.BettingDao;
 import org.game.dao.BettingModelDao;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -40,17 +42,25 @@ public class BettingModelService {
 
     public Result findBettingModel(Integer modelId){
         BettingModel model = bettingModelDao.findById(modelId).get();
-        Optional<BettingModel> winModel = bettingModelDao.findById(model.getWinModelId());
-        Optional<BettingModel> loserModel = bettingModelDao.findById(model.getLoserModelId());
+
+        Map<Integer, Integer> betMap = (Map<Integer, Integer>) JSON.parse(model.getBettingMap());
+        Integer money = betMap.values().stream().mapToInt(c -> c).sum();
         String winName = "",loserName ="";
-        if(!winModel.isPresent()) winName = winModel.get().getName();
-        if(!loserModel.isPresent()) loserName = loserModel.get().getName();
+        if(model.getWinModelId()!=null){
+            Optional<BettingModel> winModel = bettingModelDao.findById(model.getWinModelId());
+            if(!winModel.isPresent()) winName = winModel.get().getName();
+        }
+        if(model.getLoserModelId()!=null){
+            Optional<BettingModel> loserModel = bettingModelDao.findById(model.getLoserModelId());
+            if(!loserModel.isPresent()) loserName = loserModel.get().getName();
+        }
         String finalWinName = winName;
         String finalLoserName = loserName;
         return new Result(new LinkedHashMap<String,Object>(){{
             this.put("model",model);
             this.put("winName", finalWinName);
             this.put("loserName", finalLoserName);
+            this.put("投注总额", money);
         }});
     }
 

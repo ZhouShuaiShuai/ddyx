@@ -72,6 +72,7 @@ public class GameScheduled {
         }
             //如果90秒过了 还没有请求结束接口就自动结束，选择一个赢率最大的
 //        }
+        bettingService.endModel();
         BittingValue.falg = false;
     }
 

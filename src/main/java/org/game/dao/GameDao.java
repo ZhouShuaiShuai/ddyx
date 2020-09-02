@@ -50,4 +50,7 @@ public interface GameDao extends JpaRepository<Game, Integer> {
             "group by id desc limit 20 ",nativeQuery = true )
     List<Game> find20Games();
 
+    @Query(value = "select sum(game_money) from yebill where user_id = ?1 group by game_id order by game_id desc limit 1",nativeQuery = true )
+    Integer getLastGameMoney(Integer userId);
+
 }
