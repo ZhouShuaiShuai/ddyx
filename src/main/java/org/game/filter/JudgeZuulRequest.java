@@ -83,11 +83,11 @@ public class JudgeZuulRequest {
                             return;
                         }
                         try {
-                            if(!JWTToken.userMap.get(user.getId()).equals(xAuthToken)){
-                                log.error("用户已在其它设备登录！");
-                                req.getRequestDispatcher("/user/otherLogin").forward(req, servletResponse);
-                                return;
-                            }
+//                            if(!JWTToken.userMap.get(user.getId()).equals(xAuthToken)){
+//                                log.error("用户已在其它设备登录！");
+//                                req.getRequestDispatcher("/user/otherLogin").forward(req, servletResponse);
+//                                return;
+//                            }
                             if (!JWTToken.isJwtValid(xAuthToken, user)) {
                                 log.error("用户登录超时！");
                                 req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);

@@ -17,9 +17,9 @@ import java.util.concurrent.Executors;
 
 public class BittingValue {
 
-    public static Map<Integer,BettingModel> bettingModelList;  //启动的用户自动投注
+    public static Map<Integer,BettingModel> bettingModelList = new LinkedHashMap<>();  //每一把的用户自动投注
 
-    public static Map<Integer,Map<String, Integer>> modelCon;   //用户押注配置
+    public static Map<Integer,Map<String, Integer>> modelCon = new LinkedHashMap<>();   //用户押注配置
 
     public static Integer moneyPool = 0; //奖金池
 
@@ -51,6 +51,7 @@ public class BittingValue {
      * 每一把初始化
      */
     public static void initBittingValue(Game game, BettingService bettingService){
+        bettingModelList = new LinkedHashMap<>();
         /**
          * 把上一把的押注金额放入到betMap2中方便续压
          */

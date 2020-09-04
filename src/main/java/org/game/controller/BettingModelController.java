@@ -40,31 +40,35 @@ public class BettingModelController {
     @Autowired
     private UserDao userDao;
 
-    @GetMapping("startModel")
-    @ApiOperation(value = "开始自动投注")
-    public Result startModel(Integer modelId){
-        if(BittingValue.game.getReTime()<15){
-            return new Result("正在计算，目前不能开启自动投注！",null);
-        }
-        return bettingModelService.startModel(modelId);
-    }
+//    @GetMapping("startModel")
+//    @ApiOperation(value = "开始自动投注")
+//    public Result startModel(Integer modelId){
+//        if(BittingValue.game.getReTime()<15){
+//            return new Result("正在计算，目前不能开启自动投注！",null);
+//        }
+//        return bettingModelService.startModel(modelId);
+//    }
 
     @GetMapping("setConfig")
     @ApiOperation(value = "设置用户投注配置")
-    public Result setConfig(HttpServletRequest req,Integer max,Integer min ,Integer num){
+    public Result setConfig(HttpServletRequest req,Integer max,Integer min ,Integer num,Integer startGameId,Integer startModelId){
         User user = UserUtil.getUserByReq(req, userDao);
         Map<String,Integer> map = new LinkedHashMap<>();
         map.put("max",max);
         map.put("min",min);
         map.put("num",num);
+        map.put("startGameId",startGameId);
+        map.put("startModelId",startModelId);
         BittingValue.modelCon.put(user.getId(),map);
         return new Result("OK");
     }
 
     @GetMapping("endModel")
     @ApiOperation(value = "结束自动投注")
-    public Result endModel(Integer modelId){
-        return bettingModelService.endModel(modelId);
+    public Result endModel(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        BittingValue.modelCon.remove(user.getId());
+        return new Result("已关闭，下把开始生效！");
     }
 
 

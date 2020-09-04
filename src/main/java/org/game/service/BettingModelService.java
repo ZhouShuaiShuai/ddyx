@@ -25,7 +25,7 @@ public class BettingModelService {
     private BettingModelDao bettingModelDao;
 
     public Result startModel(Integer modelId){
-        BettingModel bettingModel = bettingModelDao.getOne(modelId);
+        BettingModel bettingModel = bettingModelDao.findById(modelId).get();
         BittingValue.bettingModelList.put(modelId,bettingModel);
         return new Result("已启动，下把开始生效！");
     }
@@ -48,11 +48,11 @@ public class BettingModelService {
         String winName = "",loserName ="";
         if(model.getWinModelId()!=null){
             Optional<BettingModel> winModel = bettingModelDao.findById(model.getWinModelId());
-            if(!winModel.isPresent()) winName = winModel.get().getName();
+            if(winModel.isPresent()) winName = winModel.get().getName();
         }
         if(model.getLoserModelId()!=null){
             Optional<BettingModel> loserModel = bettingModelDao.findById(model.getLoserModelId());
-            if(!loserModel.isPresent()) loserName = loserModel.get().getName();
+            if(loserModel.isPresent()) loserName = loserModel.get().getName();
         }
         String finalWinName = winName;
         String finalLoserName = loserName;
