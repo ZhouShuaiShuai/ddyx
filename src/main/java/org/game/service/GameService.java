@@ -112,12 +112,20 @@ public class GameService {
 //            }
 
         }
+
+        Map<String, Integer> confMap =  BittingValue.modelCon.get(user.getId());
+        boolean flagConf = true;
+        if(confMap==null || confMap.isEmpty()){
+            flagConf = false;
+        }
+        boolean flag =flagConf;
         log.error("运行时长 ： "+ (System.currentTimeMillis() - time));
         return new Result(new LinkedHashMap<String,Object>(){{
             put("当前游戏信息",game);
             put("最近二十次游戏记录",games);
             if(user!=null)
             put("当前用户信息",user);
+            put("当前用户信息是否开启自动投注",flag);
         }});
     }
 

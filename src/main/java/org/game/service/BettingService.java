@@ -58,50 +58,51 @@ public class BettingService {
                 BittingValue.bettingModelList.remove(userId);
             }
             User user = userDao.findById(userId).get();
-
-            if(con.get("max") == null || user.getMoney().compareTo(new BigDecimal(con.get("max")))<0){
-                if(con.get("min") == null || user.getMoney().compareTo(new BigDecimal(con.get("min")))>0){
-                    Integer money = gameDao.getLastGameMoney(userId);
+            if(con.get("startGameId") == -1){
+                if(con.get("max") == null || user.getMoney().compareTo(new BigDecimal(con.get("max")))<0){
+                    if(con.get("min") == null || user.getMoney().compareTo(new BigDecimal(con.get("min")))>0){
+                        Integer money = gameDao.getLastGameMoney(userId);
 //                    BettingModel bettingModel = BittingValue.bettingModelList.get(userId);
-                    System.out.println("con : "+con);
-                    BettingModel bettingModel = bettingModelDao.findById(con.get("startModelId")).get();
-                    if(money==null){
-                        return;
-                    }else if(money>0){
-                        Optional<BettingModel> model = bettingModelDao.findById(bettingModel.getWinModelId());
-                        if(model!=null&&model.isPresent()){
-                            Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
-                                put("max", con.get("max"));
-                                put("min", con.get("min"));
-                                put("num", con.get("num"));
-                                put("startGameId", -1);
-                                put("startModelId", model.get().getId());
-                            }};
-                            BittingValue.modelCon.put(userId,map);
+                        System.out.println("con : "+con);
+                        BettingModel bettingModel = bettingModelDao.findById(con.get("startModelId")).get();
+                        if(money==null){
                             return;
-                        }else {
-                            BittingValue.modelCon.remove(userId);
-                            BittingValue.bettingModelList.remove(userId);
-                        }
-                    } else {
-                        Optional<BettingModel> model = bettingModelDao.findById(bettingModel.getLoserModelId());
-                        if(model!=null&& model.isPresent()){
-                            Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
-                                put("max", con.get("max"));
-                                put("min", con.get("min"));
-                                put("num", con.get("num"));
-                                put("startGameId", -1);
-                                put("startModelId", model.get().getId());
-                            }};
-                            BittingValue.modelCon.put(userId,map);
-                            return;
-                        }else {
-                            BittingValue.modelCon.remove(userId);
-                            BittingValue.bettingModelList.remove(userId);
+                        }else if(money>0){
+                            Optional<BettingModel> model = bettingModelDao.findById(bettingModel.getWinModelId());
+                            if(model!=null&&model.isPresent()){
+                                Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
+                                    put("max", con.get("max"));
+                                    put("min", con.get("min"));
+                                    put("num", con.get("num"));
+                                    put("startGameId", -1);
+                                    put("startModelId", model.get().getId());
+                                }};
+                                BittingValue.modelCon.put(userId,map);
+                                return;
+                            }else {
+                                BittingValue.modelCon.remove(userId);
+                                BittingValue.bettingModelList.remove(userId);
+                            }
+                        } else {
+                            Optional<BettingModel> model = bettingModelDao.findById(bettingModel.getLoserModelId());
+                            if(model!=null&& model.isPresent()){
+                                Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
+                                    put("max", con.get("max"));
+                                    put("min", con.get("min"));
+                                    put("num", con.get("num"));
+                                    put("startGameId", -1);
+                                    put("startModelId", model.get().getId());
+                                }};
+                                BittingValue.modelCon.put(userId,map);
+                                return;
+                            }else {
+                                BittingValue.modelCon.remove(userId);
+                                BittingValue.bettingModelList.remove(userId);
+                            }
                         }
                     }
+                    BittingValue.modelCon.remove(userId);
                 }
-                BittingValue.modelCon.remove(userId);
             }
         }
     }

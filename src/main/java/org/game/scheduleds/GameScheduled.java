@@ -62,6 +62,7 @@ public class GameScheduled {
     @Async
     @Scheduled(initialDelay=80000, fixedRate=90000)
     public void endGame(){
+
 //        while (!BittingValue.falg){
         while (true){
             Integer num = MD5.random.nextInt(28);

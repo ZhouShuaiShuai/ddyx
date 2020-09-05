@@ -20,6 +20,7 @@ public class BittingValue {
     public static Map<Integer,BettingModel> bettingModelList = new LinkedHashMap<>();  //每一把的用户自动投注
 
     public static Map<Integer,Map<String, Integer>> modelCon = new LinkedHashMap<>();   //用户押注配置
+    public static Map<Integer,Map<String, Integer>> startModelCon = new LinkedHashMap<>();   //用户押注配置
 
     public static Integer moneyPool = 0; //奖金池
 

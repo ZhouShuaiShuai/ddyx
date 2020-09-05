@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,27 @@ public class BettingModelController {
     @Autowired
     private UserDao userDao;
 
+    @GetMapping("getConfig")
+    @ApiOperation(value = "获取用户投注详情")
+    public Result getConfig(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        Map<String, Integer> startConfMap =  BittingValue.startModelCon.get(user.getId());
+        Map<String, Integer> confMap =  BittingValue.modelCon.get(user.getId());
+        if(startConfMap==null || startConfMap.isEmpty()){
+            return new Result(null);
+        }else if(confMap==null || confMap.isEmpty()){
+            BittingValue.startModelCon.remove(user.getId());
+            return new Result(null);
+        }else {
+            startConfMap.put("投注期数",startConfMap.get("num"));
+            startConfMap.put("剩余期数",confMap.get("num"));
+            return new Result(startConfMap);
+        }
+
+
+
+    }
+
 //    @GetMapping("startModel")
 //    @ApiOperation(value = "开始自动投注")
 //    public Result startModel(Integer modelId){
@@ -52,7 +74,14 @@ public class BettingModelController {
     @GetMapping("setConfig")
     @ApiOperation(value = "设置用户投注配置")
     public Result setConfig(HttpServletRequest req,Integer max,Integer min ,Integer num,Integer startGameId,Integer startModelId){
+        if(BittingValue.game.getId().equals(startGameId)){
+            return new Result("当前游戏已开始！请提前一把配置！",null);
+        }
         User user = UserUtil.getUserByReq(req, userDao);
+        if(user.getMoney().compareTo(new BigDecimal(max))>=0){
+            return new Result("设置的最大盈利要比当前余额大才可以！",null);
+        }
+
         Map<String,Integer> map = new LinkedHashMap<>();
         map.put("max",max);
         map.put("min",min);
@@ -60,6 +89,7 @@ public class BettingModelController {
         map.put("startGameId",startGameId);
         map.put("startModelId",startModelId);
         BittingValue.modelCon.put(user.getId(),map);
+        BittingValue.startModelCon.put(user.getId(),map);
         return new Result("OK");
     }
 
