@@ -91,9 +91,15 @@ public class GameService {
         BittingValue.moneyPool = moneyPool;
 
         List<Game> games;
+        boolean flagConf = false;
         if(user!=null){
 //            games = gameDao.find20GameByUser(user.getId());
             games = gameDao.find20Games(user.getId());
+
+            Map<String, Integer> confMap =  BittingValue.modelCon.get(user.getId());
+            if(confMap!=null && !confMap.isEmpty()){
+                flagConf = true;
+            }
 //            for(Game userGame :games){
 //                //设置中奖金额为用户中奖金额
 //                List<UserInfo> userInfos = userInfoDao.findAllByGameId(userGame.getId());
@@ -113,11 +119,8 @@ public class GameService {
 
         }
 
-        Map<String, Integer> confMap =  BittingValue.modelCon.get(user.getId());
-        boolean flagConf = true;
-        if(confMap==null || confMap.isEmpty()){
-            flagConf = false;
-        }
+
+
         boolean flag =flagConf;
         log.error("运行时长 ： "+ (System.currentTimeMillis() - time));
         return new Result(new LinkedHashMap<String,Object>(){{

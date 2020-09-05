@@ -78,8 +78,11 @@ public class BettingModelController {
             return new Result("当前游戏已开始！请提前一把配置！",null);
         }
         User user = UserUtil.getUserByReq(req, userDao);
-        if(user.getMoney().compareTo(new BigDecimal(max))>=0){
-            return new Result("设置的最大盈利要比当前余额大才可以！",null);
+        log.error("User : " + user);
+        if(user!=null ){
+            if(user.getMoney().compareTo(new BigDecimal(max))>=0){
+                return new Result("设置的最大盈利要比当前余额大才可以！",null);
+            }
         }
 
         Map<String,Integer> map = new LinkedHashMap<>();

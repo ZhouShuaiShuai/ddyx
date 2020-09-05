@@ -20,7 +20,7 @@ public class JWTToken {
     public static String buildJwt(User user) {
 
         //设置过期时间6小时
-        long time = System.currentTimeMillis() + 60 * 60 * 1000;
+        long time = System.currentTimeMillis() + 60 * 60 * 1000 * 24;
         String jwt = Jwts
                 .builder()
                 //SECRET_KEY是加密算法对应的密钥，这里使用额是HS256加密算法
