@@ -74,8 +74,8 @@ public class BettingModelController {
     @GetMapping("setConfig")
     @ApiOperation(value = "设置用户投注配置")
     public Result setConfig(HttpServletRequest req,Integer max,Integer min ,Integer num,Integer startGameId,Integer startModelId){
-        if(BittingValue.game.getId().equals(startGameId)){
-            return new Result("当前游戏已开始！请提前一把配置！",null);
+        if(startGameId <= BittingValue.game.getId()){
+            return new Result("当前游戏已开始，请重新配置开始期号！",null);
         }
         User user = UserUtil.getUserByReq(req, userDao);
         log.error("User : " + user);

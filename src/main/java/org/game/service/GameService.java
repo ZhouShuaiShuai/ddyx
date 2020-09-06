@@ -96,8 +96,8 @@ public class GameService {
 //            games = gameDao.find20GameByUser(user.getId());
             games = gameDao.find20Games(user.getId());
 
-            Map<String, Integer> confMap =  BittingValue.modelCon.get(user.getId());
-            if(confMap!=null && !confMap.isEmpty()){
+            Map<Integer, Integer> betMap =  BittingValue.betMap.get(user.getId());
+            if(betMap!=null && !betMap.isEmpty()){
                 flagConf = true;
             }
 //            for(Game userGame :games){
@@ -128,7 +128,7 @@ public class GameService {
             put("最近二十次游戏记录",games);
             if(user!=null)
             put("当前用户信息",user);
-            put("当前用户信息是否开启自动投注",flag);
+            put("当前用户是否投注",flag);
         }});
     }
 
