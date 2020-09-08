@@ -24,16 +24,16 @@ public class BettingModelService {
     @Autowired
     private BettingModelDao bettingModelDao;
 
-    public Result startModel(Integer modelId){
-        BettingModel bettingModel = bettingModelDao.findById(modelId).get();
-        BittingValue.bettingModelList.put(modelId,bettingModel);
-        return new Result("已启动，下把开始生效！");
-    }
-
-    public Result endModel(Integer modelId){
-        BittingValue.bettingModelList.remove(modelId);
-        return new Result("已关闭，下把开始生效！");
-    }
+//    public Result startModel(Integer modelId){
+//        BettingModel bettingModel = bettingModelDao.findById(modelId).get();
+//        BittingValue.bettingModelList.put(modelId,bettingModel);
+//        return new Result("已启动，下把开始生效！");
+//    }
+//
+//    public Result endModel(Integer modelId){
+//        BittingValue.bettingModelList.remove(modelId);
+//        return new Result("已关闭，下把开始生效！");
+//    }
 
     public Result findBettingModels(Integer userId){
         List<BettingModel> bettingModelList = bettingModelDao.findAllByUserId(userId);

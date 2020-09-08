@@ -45,11 +45,17 @@ public class BettingModelController {
     @ApiOperation(value = "获取用户投注详情")
     public Result getConfig(HttpServletRequest req){
         User user = UserUtil.getUserByReq(req, userDao);
-        Map<String, Integer> startConfMap =  BittingValue.startModelCon.get(user.getId());
-        Map<String, Integer> confMap =  BittingValue.modelCon.get(user.getId());
-        if(startConfMap==null || startConfMap.isEmpty()){
+        Map<String, Integer> startConfMap =  new LinkedHashMap<>();
+        if(BittingValue.startModelCon.get(user.getId())!=null){
+            startConfMap.putAll(BittingValue.startModelCon.get(user.getId()));
+        }
+        Map<String, Integer> confMap =  new LinkedHashMap<>();
+        if(BittingValue.modelCon.get(user.getId())!=null){
+            confMap.putAll(BittingValue.modelCon.get(user.getId()));
+        }
+        if(startConfMap.isEmpty()){
             return new Result(null);
-        }else if(confMap==null || confMap.isEmpty()){
+        }else if(confMap.isEmpty()){
             BittingValue.startModelCon.remove(user.getId());
             return new Result(null);
         }else {
@@ -79,10 +85,8 @@ public class BettingModelController {
         }
         User user = UserUtil.getUserByReq(req, userDao);
         log.error("User : " + user);
-        if(user!=null ){
-            if(user.getMoney().compareTo(new BigDecimal(max))>=0){
-                return new Result("设置的最大盈利要比当前余额大才可以！",null);
-            }
+        if(user!=null && user.getMoney().compareTo(new BigDecimal(max))>=0){
+            return new Result("设置的最大盈利要比当前余额大才可以！",null);
         }
 
         Map<String,Integer> map = new LinkedHashMap<>();

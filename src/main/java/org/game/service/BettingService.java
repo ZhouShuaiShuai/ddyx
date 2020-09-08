@@ -126,6 +126,10 @@ public class BettingService {
                 BettingModel bettingModel = bettingModelDao.findById(startModelId).get();
                 BittingValue.bettingModelList.put(userId,bettingModel);
             }
+
+            if(startGameId < BittingValue.game.getId() &&  startGameId != -1){
+                BittingValue.modelCon.remove(userId);
+            }
         }
 
 

@@ -51,10 +51,26 @@ public class GameScheduled {
         Game game = new Game();
         BittingValue.game = gameService.initGame(game);
         log.error("STARTING! NEW GAME!");
-        //投入自动押注的金额
-        bettingService.model();
 
 //        gameService.saveGame();
+    }
+
+    @Async
+    @Scheduled(initialDelay=10000, fixedRate=90000)
+    public void startModel(){
+        //投入自动押注的金额
+        while (true){
+            if(BittingValue.game.getReTime() > 20){
+                bettingService.model();
+                break;
+            }else {
+                try {
+                    Thread.sleep(3000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 
@@ -64,11 +80,12 @@ public class GameScheduled {
     public void endGame(){
 
 //        while (!BittingValue.falg){
-        while (true){
+        boolean flag = true;
+        while (flag){
             Integer num = MD5.random.nextInt(28);
             if(BittingValue.ylMap.get(num)!=null && BittingValue.ylMap.get(num).compareTo(BittingValue.minRate)>=0){
                 gameService.end(num);
-                break;
+                flag=false;
             }
         }
             //如果90秒过了 还没有请求结束接口就自动结束，选择一个赢率最大的
