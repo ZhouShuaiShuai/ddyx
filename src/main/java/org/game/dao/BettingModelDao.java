@@ -3,9 +3,11 @@ package org.game.dao;
 import org.game.pojo.Betting;
 import org.game.pojo.BettingModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Zhouyf
@@ -15,5 +17,21 @@ import java.util.List;
 public interface BettingModelDao extends JpaRepository<BettingModel, Integer>  {
 
     List<BettingModel> findAllByUserId(Integer userId);
+
+    @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and DATE_FORMAT( ye.create_date,'%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d');",
+            nativeQuery = true)
+    Integer findToDay(Integer userId);
+
+    @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and TO_DAYS( NOW( ) ) - TO_DAYS(ye.create_date) <= 1;",
+    nativeQuery = true)
+    Integer findLastDay(Integer userId);
+
+    @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and YEARWEEK(date_format(ye.create_date,'%Y-%m-%d')) = YEARWEEK(now());",
+            nativeQuery = true)
+    Integer findWeek(Integer userId);
+
+    @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and DATE_FORMAT( ye.create_date,'%Y-%m') = DATE_FORMAT(now(), '%Y-%m');",
+            nativeQuery = true)
+    Integer findMonth(Integer userId);
 
 }

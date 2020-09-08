@@ -5,6 +5,7 @@ import org.game.config.BittingValue;
 import org.game.dao.BettingDao;
 import org.game.dao.BettingModelDao;
 import org.game.pojo.BettingModel;
+import org.game.pojo.User;
 import org.game.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,20 @@ public class BettingModelService {
 
     @Autowired
     private BettingModelDao bettingModelDao;
+
+    public Result getWinOrLoser(User user){
+        Integer toDay = bettingModelDao.findToDay(user.getId());
+        Integer lastDay = bettingModelDao.findLastDay(user.getId());
+        Integer week = bettingModelDao.findWeek(user.getId());
+        Integer month = bettingModelDao.findMonth(user.getId());
+        return new Result(new LinkedHashMap<String,Object>(){{
+            this.put("今天",toDay);
+            this.put("昨天", lastDay);
+            this.put("本周", week);
+            this.put("本月", month);
+        }});
+
+    }
 
     public Result startModel(Integer modelId){
         BettingModel bettingModel = bettingModelDao.findById(modelId).get();
