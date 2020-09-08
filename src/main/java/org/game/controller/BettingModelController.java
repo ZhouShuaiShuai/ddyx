@@ -25,10 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Zhouyf
- * @Data 2020-09-01  19:03
- */
 @RestController
 @RequestMapping(value = "model")
 @Api(tags = {"投注模式"})
@@ -40,6 +36,14 @@ public class BettingModelController {
 
     @Autowired
     private UserDao userDao;
+
+    @GetMapping("getWinOrLoser")
+    @ApiOperation(value = "我的赢亏")
+    public Result getWinOrLoser(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        return bettingModelService.getWinOrLoser(user);
+    }
+
 
     @GetMapping("getConfig")
     @ApiOperation(value = "获取用户投注详情")
