@@ -10,10 +10,8 @@ import org.game.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.Date;
+import java.util.*;
 
 /**
  * @author Zhouyf
@@ -47,6 +45,24 @@ public class BettingModelService {
             this.put("本月", month);
         }});
 
+    }
+
+    public Result getWinOrLoserByGame(User user){
+        List<Map<String,Object>> resultMap = bettingModelDao.getWinOrLoserByGame(user.getId());
+        List<Map<String,Object>> resultNew = new LinkedList<>();
+        for(Map<String,Object> map : resultMap){
+            Map<String, Object> newMap = new HashMap<>(map);
+            if(newMap.get("date")!=null){
+                newMap.put("date",((java.sql.Timestamp)newMap.get("date")).getTime());
+                resultNew.add(newMap);
+            }
+        }
+        return new Result(resultNew);
+    }
+
+    public Result getWinOrLoserByDay(User user){
+        List<Map<String,Object>> resultMap = bettingModelDao.getWinOrLoserByDay(user.getId());
+        return new Result(resultMap);
     }
 
     public Result startModel(Integer modelId){

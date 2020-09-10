@@ -41,7 +41,30 @@ public class BettingModelController {
     @ApiOperation(value = "我的赢亏")
     public Result getWinOrLoser(HttpServletRequest req){
         User user = UserUtil.getUserByReq(req, userDao);
+        if(user!=null)
         return bettingModelService.getWinOrLoser(user);
+        else
+            return new Result("USER IS NULL!",null);
+    }
+
+    @GetMapping("getWinOrLoserByGame")
+    @ApiOperation(value = "每把游戏的盈亏")
+    public Result getWinOrLoserByGame(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        if(user!=null)
+            return bettingModelService.getWinOrLoserByGame(user);
+        else
+            return new Result("USER IS NULL!",null);
+    }
+
+    @GetMapping("getWinOrLoserByDay")
+    @ApiOperation(value = "每日的盈亏")
+    public Result getWinOrLoserByDay(HttpServletRequest req){
+        User user = UserUtil.getUserByReq(req, userDao);
+        if(user!=null)
+            return bettingModelService.getWinOrLoserByDay(user);
+        else
+            return new Result("USER IS NULL!",null);
     }
 
 
