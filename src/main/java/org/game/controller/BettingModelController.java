@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.game.config.BittingValue;
+import org.game.dao.BettingModelDao;
 import org.game.dao.UserDao;
 import org.game.pojo.BettingModel;
 import org.game.pojo.User;
@@ -24,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "model")
@@ -33,6 +35,9 @@ public class BettingModelController {
 
     @Autowired
     private BettingModelService bettingModelService;
+
+    @Autowired
+    private BettingModelDao bettingModelDao;
 
     @Autowired
     private UserDao userDao;
@@ -112,8 +117,18 @@ public class BettingModelController {
         }
         User user = UserUtil.getUserByReq(req, userDao);
         log.error("User : " + user);
-        if(user!=null && user.getMoney().compareTo(new BigDecimal(max))>=0){
+        if(user!=null && max!=0 && user.getMoney().compareTo(new BigDecimal(max))>=0){
             return new Result("设置的最大盈利要比当前余额大才可以！",null);
+        }
+        Optional<BettingModel> model = bettingModelDao.findById(startModelId);
+        if(model!=null&&model.isPresent()){
+            return new Result("投注ID设置有问题",null);
+        }
+        BettingModel bettingModel = model.get();
+        Map<Integer, Integer> betMap = (Map<Integer, Integer>) JSON.parse(bettingModel.getBettingMap());
+        Integer count = betMap.values().stream().mapToInt(c -> c).sum();
+        if(user.getMoney().compareTo(new BigDecimal(count))<0){
+            return new Result("投注金额大于余额！",null);
         }
 
         Map<String,Integer> map = new LinkedHashMap<>();

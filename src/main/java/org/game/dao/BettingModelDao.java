@@ -20,19 +20,19 @@ public interface BettingModelDao extends JpaRepository<BettingModel, Integer>  {
 
     @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and DATE_FORMAT( ye.create_date,'%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d');",
             nativeQuery = true)
-    Integer findToDay(Integer userId);
+    String findToDay(Integer userId);
 
     @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and TO_DAYS( NOW( ) ) - TO_DAYS(ye.create_date) <= 1;",
     nativeQuery = true)
-    Integer findLastDay(Integer userId);
+    String findLastDay(Integer userId);
 
     @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and YEARWEEK(date_format(ye.create_date,'%Y-%m-%d')) = YEARWEEK(now());",
             nativeQuery = true)
-    Integer findWeek(Integer userId);
+    String findWeek(Integer userId);
 
     @Query(value = "select sum(ye.game_money) from yebill ye where ye.user_id = ?1 and DATE_FORMAT( ye.create_date,'%Y-%m') = DATE_FORMAT(now(), '%Y-%m');",
             nativeQuery = true)
-    Integer findMonth(Integer userId);
+    String findMonth(Integer userId);
 
     @Query(value = "select ye.game_id gameid ,ye.create_date date,ye.game_money money,(select g.number from game g where g.id = ye.game_id) num " +
             "from yebill ye where ye.user_id = ?1 ORDER BY ye.game_id DESC limit 100",

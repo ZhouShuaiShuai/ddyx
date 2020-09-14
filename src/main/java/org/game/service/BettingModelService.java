@@ -34,10 +34,10 @@ public class BettingModelService {
 //        return new Result("已关闭，下把开始生效！");
 //    }
     public Result getWinOrLoser(User user){
-        Integer toDay = bettingModelDao.findToDay(user.getId());
-        Integer lastDay = bettingModelDao.findLastDay(user.getId());
-        Integer week = bettingModelDao.findWeek(user.getId());
-        Integer month = bettingModelDao.findMonth(user.getId());
+        String toDay = bettingModelDao.findToDay(user.getId());
+        String lastDay = bettingModelDao.findLastDay(user.getId());
+        String week = bettingModelDao.findWeek(user.getId());
+        String month = bettingModelDao.findMonth(user.getId());
         return new Result(new LinkedHashMap<String,Object>(){{
             this.put("今天",toDay);
             this.put("昨天", lastDay);
