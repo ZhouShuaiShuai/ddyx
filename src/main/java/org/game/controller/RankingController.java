@@ -33,4 +33,6 @@ public class RankingController {
         return new Result(userInfoDao.findAllByGameIdOrderByYlDesc(gameId,pageable));
     }
 
+
+
 }

@@ -8,6 +8,7 @@ import org.game.pojo.BettingModel;
 import org.game.pojo.User;
 import org.game.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -47,14 +48,16 @@ public class BettingModelService {
 
     }
 
-    public Result getWinOrLoserByGame(User user){
-        List<Map<String,Object>> resultMap = bettingModelDao.getWinOrLoserByGame(user.getId());
+    public Result getWinOrLoserByGame(User user, Pageable pageable){
+        List<Map<String,Object>> resultMap = bettingModelDao.getWinOrLoserByGame(user.getId(),pageable);
         List<Map<String,Object>> resultNew = new LinkedList<>();
         for(Map<String,Object> map : resultMap){
             Map<String, Object> newMap = new HashMap<>(map);
-            if(newMap.get("date")!=null){
-                newMap.put("date",((java.sql.Timestamp)newMap.get("date")).getTime());
-                resultNew.add(newMap);
+            if(newMap.get("num")!=null) {
+                if (newMap.get("date") != null) {
+                    newMap.put("date", ((java.sql.Timestamp) newMap.get("date")).getTime());
+                    resultNew.add(newMap);
+                }
             }
         }
         return new Result(resultNew);

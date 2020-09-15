@@ -50,16 +50,19 @@ public class BettingService {
     public void endModel(){
 //        Map<Integer,Map<String, Integer>> modelCon = BittingValue.modelCon;
         Map<Integer,Map<String, Integer>> modelCon = BittingValue.startModelCon;
+        System.out.println("end startModelCon : "+ BittingValue.startModelCon);
+        System.out.println("end modelCon : "+ BittingValue.modelCon);
 
         for(Integer userId : modelCon.keySet()){
             Map<String,Integer> con = modelCon.get(userId);
             if(con.isEmpty()){
                 log.error("当前用户没有自动押注配置信息！ userId :"+ userId);
                 BittingValue.modelCon.remove(userId);
+                BittingValue.startModelCon.remove(userId);
                 BittingValue.bettingModelList.remove(userId);
             }
             User user = userDao.findById(userId).get();
-            if(con.get("startGameId") == -1){
+            if(BittingValue.modelCon.get(userId).get("startGameId") == -1){
                 if(con.get("max") == null || con.get("max") == 0 || user.getMoney().compareTo(new BigDecimal(con.get("max")))<0){
                     if(con.get("min") == null || user.getMoney().compareTo(new BigDecimal(con.get("min")))>0){
                         Integer money = gameDao.getLastGameMoney(userId);
@@ -67,10 +70,10 @@ public class BettingService {
                         System.out.println("con : "+con);
                         BettingModel bettingModel = bettingModelDao.findById(con.get("startModelId")).get();
                         if(money==null){
-                            return;
+                            continue;
                         }else if(money>0){
                             Optional<BettingModel> model = bettingModelDao.findById(bettingModel.getWinModelId());
-                            if(model!=null&&model.isPresent()){
+                            if(model!=null&& model.isPresent()){
                                 Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
                                     put("max", con.get("max"));
                                     put("min", con.get("min"));
@@ -79,7 +82,7 @@ public class BettingService {
                                     put("startModelId", model.get().getId());
                                 }};
                                 BittingValue.modelCon.put(userId,map);
-                                return;
+                                continue;
                             }else {
                                 Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
                                     put("max", con.get("max"));
@@ -89,7 +92,7 @@ public class BettingService {
                                     put("startModelId", con.get("startModelId"));
                                 }};
                                 BittingValue.modelCon.put(userId,map);
-                                return;
+                                continue;
 //                                BittingValue.modelCon.remove(userId);
 //                                BittingValue.bettingModelList.remove(userId);
                             }
@@ -104,7 +107,7 @@ public class BettingService {
                                     put("startModelId", model.get().getId());
                                 }};
                                 BittingValue.modelCon.put(userId,map);
-                                return;
+                                continue;
                             }else {
                                 Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
                                     put("max", con.get("max"));
@@ -114,21 +117,25 @@ public class BettingService {
                                     put("startModelId", con.get("startModelId"));
                                 }};
                                 BittingValue.modelCon.put(userId,map);
-                                return;
+                                continue;
 //                                BittingValue.modelCon.remove(userId);
 //                                BittingValue.bettingModelList.remove(userId);
                             }
                         }
                     }
                 }
+                BittingValue.modelCon.remove(userId);
+                BittingValue.startModelCon.remove(userId);
             }
-            BittingValue.modelCon.remove(userId);
         }
+        System.out.println("end startModelCon : "+ BittingValue.startModelCon);
+        System.out.println("end modelCon : "+ BittingValue.modelCon);
     }
 
     public void model(){
-
         Map<Integer,Map<String, Integer>> modelCon = BittingValue.modelCon;
+        System.out.println("start startModelCon : "+ BittingValue.startModelCon);
+        System.out.println("start modelCon : "+ BittingValue.modelCon);
         if(modelCon==null || modelCon.isEmpty()){
             return;
         }
@@ -148,6 +155,7 @@ public class BettingService {
 
             if(startGameId < BittingValue.game.getId() &&  startGameId != -1){
                 BittingValue.modelCon.remove(userId);
+                BittingValue.startModelCon.remove(userId);
             }
         }
 
@@ -162,6 +170,7 @@ public class BettingService {
             if(con.isEmpty()){
                 log.error("当前用户没有自动押注配置信息！ userId :"+ userId);
                 BittingValue.modelCon.remove(userId);
+                BittingValue.startModelCon.remove(userId);
                 BittingValue.bettingModelList.remove(userId);
             }
 
@@ -186,14 +195,15 @@ public class BettingService {
                                 put("startModelId", con.get("startModelId"));
                             }};
                             BittingValue.modelCon.put(userId,map);
-                            return;
+                            continue;
                         }
                     }
                 }
             }
             BittingValue.modelCon.remove(userId);
         }
-
+        System.out.println("start startModelCon : "+ BittingValue.startModelCon);
+        System.out.println("start modelCon : "+ BittingValue.modelCon);
     }
 
 }

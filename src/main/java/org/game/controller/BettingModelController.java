@@ -14,6 +14,9 @@ import org.game.service.BettingModelService;
 import org.game.util.StringUtils;
 import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,10 +57,11 @@ public class BettingModelController {
 
     @GetMapping("getWinOrLoserByGame")
     @ApiOperation(value = "每把游戏的盈亏")
-    public Result getWinOrLoserByGame(HttpServletRequest req){
+    public Result getWinOrLoserByGame(Integer pageIndex, Integer pageSize,HttpServletRequest req){
+        Pageable pageable = PageRequest.of(pageIndex, pageSize,Sort.Direction.DESC, "game_id");
         User user = UserUtil.getUserByReq(req, userDao);
         if(user!=null)
-            return bettingModelService.getWinOrLoserByGame(user);
+            return bettingModelService.getWinOrLoserByGame(user,pageable);
         else
             return new Result("USER IS NULL!",null);
     }
@@ -121,7 +125,7 @@ public class BettingModelController {
             return new Result("设置的最大盈利要比当前余额大才可以！",null);
         }
         Optional<BettingModel> model = bettingModelDao.findById(startModelId);
-        if(model!=null&&model.isPresent()){
+        if(model==null||!model.isPresent()){
             return new Result("投注ID设置有问题",null);
         }
         BettingModel bettingModel = model.get();
