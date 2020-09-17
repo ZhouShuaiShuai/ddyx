@@ -76,7 +76,7 @@ public class BettingService {
                             if(model!=null&& model.isPresent()){
                                 Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
                                     put("max", con.get("max"));
-                                    put("min", con.get("min"));
+                                    put("min", BittingValue.modelCon.get(userId).get("min"));
                                     put("num", con.get("num"));
                                     put("startGameId", -1);
                                     put("startModelId", model.get().getId());
@@ -87,7 +87,7 @@ public class BettingService {
                                 Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
                                     put("max", con.get("max"));
                                     put("min", con.get("min"));
-                                    put("num", con.get("num"));
+                                    put("num", BittingValue.modelCon.get(userId).get("num"));
                                     put("startGameId", -1);
                                     put("startModelId", con.get("startModelId"));
                                 }};
@@ -102,7 +102,7 @@ public class BettingService {
                                 Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
                                     put("max", con.get("max"));
                                     put("min", con.get("min"));
-                                    put("num", con.get("num"));
+                                    put("num", BittingValue.modelCon.get(userId).get("num"));
                                     put("startGameId", -1);
                                     put("startModelId", model.get().getId());
                                 }};
@@ -112,7 +112,7 @@ public class BettingService {
                                 Map<String, Integer> map = new LinkedHashMap<String, Integer>() {{
                                     put("max", con.get("max"));
                                     put("min", con.get("min"));
-                                    put("num", con.get("num"));
+                                    put("num", BittingValue.modelCon.get(userId).get("num"));
                                     put("startGameId", -1);
                                     put("startModelId", con.get("startModelId"));
                                 }};
@@ -201,6 +201,7 @@ public class BettingService {
                 }
             }
             BittingValue.modelCon.remove(userId);
+            BittingValue.startModelCon.remove(userId);
         }
         System.out.println("start startModelCon : "+ BittingValue.startModelCon);
         System.out.println("start modelCon : "+ BittingValue.modelCon);

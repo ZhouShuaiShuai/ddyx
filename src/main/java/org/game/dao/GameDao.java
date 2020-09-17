@@ -60,7 +60,7 @@ public interface GameDao extends JpaRepository<Game, Integer> {
             " g.number%3 as num3 ," +
             " g.number%4 as num4 ," +
             " g.number%5 as num5 ," +
-            "g.id - (select g2.id from game g2 where g2.number = g.number and g2.id <= g.id ORDER BY g2.id desc limit 1,1) as jg" +
+            "g.id - (select g2.id from game g2 where g2.number = g.number and g2.id <= g.id ORDER BY g2.id desc limit 1,1) as jg " +
             "from game g where g.number is not null ORDER BY g.id desc limit 100;",
             nativeQuery = true)
     List<Map<String,Integer>> find100GameNum();
