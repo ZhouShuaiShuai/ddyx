@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Zhouyf
@@ -52,5 +53,16 @@ public interface GameDao extends JpaRepository<Game, Integer> {
 
     @Query(value = "select sum(game_money) from yebill where user_id = ?1 group by game_id order by game_id desc limit 1",nativeQuery = true )
     Integer getLastGameMoney(Integer userId);
+
+    @Query(value = "select " +
+            "g.id gameid," +
+            "g.number num ," +
+            " g.number%3 as num3 ," +
+            " g.number%4 as num4 ," +
+            " g.number%5 as num5 ," +
+            "g.id - (select g2.id from game g2 where g2.number = g.number and g2.id <= g.id ORDER BY g2.id desc limit 1,1) as jg" +
+            "from game g where g.number is not null ORDER BY g.id desc limit 100;",
+            nativeQuery = true)
+    List<Map<String,Integer>> find100GameNum();
 
 }

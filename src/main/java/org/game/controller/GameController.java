@@ -39,6 +39,12 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @GetMapping("find100GameNum")
+    @ApiOperation(value = "进100期开奖记录")
+    public Result find100GameNum(){
+        return gameService.find100GameNum();
+    }
+
     @GetMapping("betting")
     @ApiOperation(value = "用户投注")
     public Result betting(HttpServletRequest req, @RequestParam(value = "nums")List<Integer> nums,@RequestParam(value = "counts")List<Integer> counts){

@@ -39,7 +39,10 @@ public class GameService {
     @Autowired
     private UserInfoDao userInfoDao;
 
-
+    public Result find100GameNum(){
+        List<Map<String,Integer>> resultMap = gameDao.find100GameNum();
+        return new Result(resultMap);
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public synchronized Result betting(User user, Map<Integer, Integer> betMap){
