@@ -65,4 +65,11 @@ public interface GameDao extends JpaRepository<Game, Integer> {
             nativeQuery = true)
     List<Map<String,Integer>> find100GameNum();
 
+    @Query(value = "select g.number num ," +
+            "g.id - (select g2.id from game g2 where g2.number = g.number and g2.id <= g.id ORDER BY g2.id desc limit 1,1) as jg " +
+            " from game g where g.id in " +
+            " (select max(id) from game where number is not null GROUP BY number) ORDER BY g.number",
+            nativeQuery = true)
+    List<Map<String,Integer>> findNumJg();
+
 }

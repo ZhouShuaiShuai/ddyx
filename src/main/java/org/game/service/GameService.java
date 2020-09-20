@@ -44,6 +44,11 @@ public class GameService {
         return new Result(resultMap);
     }
 
+    public Result findNumJg(){
+        List<Map<String,Integer>> resultMap = gameDao.findNumJg();
+        return new Result(resultMap);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public synchronized Result betting(User user, Map<Integer, Integer> betMap){
         //该用户这一把的投注金额

@@ -1,6 +1,7 @@
 package org.game.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.game.pojo.AdminUser;
 import org.game.pojo.User;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -69,6 +70,7 @@ public class JudgeZuulRequest {
                         || path.contains("/game/getGameInfoQ")
                         || path.contains("/ranking/findRanking")
                         || path.contains("/game/findGameState")
+                        || path.contains("/adminUser/adminLogin")
                 )
                     filterChain.doFilter(servletRequest, servletResponse);
                 else {
@@ -77,28 +79,41 @@ public class JudgeZuulRequest {
                         req.getRequestDispatcher("/user/isNotLogin").forward(req, servletResponse);
                         return;
                     } else {
-                        User user = JWTToken.getUserFromJwt(xAuthToken);
-                        if (user == null) {
-                            req.getRequestDispatcher("/user/userIsNull").forward(req, servletResponse);
-                            return;
-                        }
-                        try {
+                        if(JWTToken.getAdminUserFromJwt(xAuthToken)!=null){
+                            //管理员登陆
+                            AdminUser adminUser = JWTToken.getAdminUserFromJwt(xAuthToken);
+                            if(!JWTToken.userMap.get(adminUser.getId()).equals(xAuthToken)){
+                                log.error("管理员用户已在其它设备登录！");
+                                req.getRequestDispatcher("/user/otherLogin").forward(req, servletResponse);
+                                return;
+                            }
+                            filterChain.doFilter(servletRequest, servletResponse);
+                        }else{
+                            //普通用户登陆
+                            User user = JWTToken.getUserFromJwt(xAuthToken);
+                            if (user == null) {
+                                req.getRequestDispatcher("/user/userIsNull").forward(req, servletResponse);
+                                return;
+                            }
+                            try {
 //                            if(!JWTToken.userMap.get(user.getId()).equals(xAuthToken)){
 //                                log.error("用户已在其它设备登录！");
 //                                req.getRequestDispatcher("/user/otherLogin").forward(req, servletResponse);
 //                                return;
 //                            }
-                            if (!JWTToken.isJwtValid(xAuthToken, user)) {
-                                log.error("用户登录超时！");
-                                req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
-                            } else {
-                                filterChain.doFilter(servletRequest, servletResponse);
+                                if (!JWTToken.isJwtValid(xAuthToken, user)) {
+                                    log.error("用户登录超时！");
+                                    req.getRequestDispatcher("/user/loginTimeOut").forward(req, servletResponse);
+                                } else {
+                                    filterChain.doFilter(servletRequest, servletResponse);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                log.error(e.getMessage());
+                                req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            log.error(e.getMessage());
-                            req.getRequestDispatcher("/user/userError").forward(req, servletResponse);
                         }
+
                     }
                 }
             }

@@ -1,5 +1,7 @@
 package org.game.util;
 
+import org.game.dao.AdminUserDao;
+import org.game.pojo.AdminUser;
 import org.game.pojo.UserInfo;
 import org.game.dao.UserDao;
 import org.game.enums.Magnification;
@@ -21,6 +23,14 @@ public class UserUtil {
         User user = JWTToken.getUserFromJwt(xAuthToken);
         if(user == null) return null;
         user = userDao.findById(user.getId()).get();
+        return user;
+    }
+
+    public synchronized static AdminUser getAdminUserByReq(HttpServletRequest req, AdminUserDao adminUserDao) {
+        String xAuthToken = req.getHeader("x-auth-token");
+        AdminUser user = JWTToken.getAdminUserFromJwt(xAuthToken);
+        if(user == null) return null;
+        user = adminUserDao.findById(user.getId()).get();
         return user;
     }
 

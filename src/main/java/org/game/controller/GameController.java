@@ -45,6 +45,12 @@ public class GameController {
         return gameService.find100GameNum();
     }
 
+    @GetMapping("findNumJg")
+    @ApiOperation(value = "获取游戏间隔")
+    public Result findNumJg(){
+        return gameService.findNumJg();
+    }
+
     @GetMapping("betting")
     @ApiOperation(value = "用户投注")
     public Result betting(HttpServletRequest req, @RequestParam(value = "nums")List<Integer> nums,@RequestParam(value = "counts")List<Integer> counts){

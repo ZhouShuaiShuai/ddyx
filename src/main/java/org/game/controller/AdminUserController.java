@@ -4,16 +4,23 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.game.dao.AdminUserDao;
+import org.game.dao.UserDao;
+import org.game.filter.JWTToken;
 import org.game.pojo.AdminUser;
+import org.game.pojo.User;
 import org.game.result.Result;
 import org.game.util.MD5;
 import org.game.util.StringUtils;
+import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Zhouyf
@@ -27,6 +34,9 @@ public class AdminUserController {
 
     @Autowired
     private AdminUserDao adminUserDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @GetMapping("addAdminUser")
     @ApiOperation(value = "添加管理员用户,默认登录密码123456")
@@ -43,16 +53,80 @@ public class AdminUserController {
         return new Result(resultUser);
     }
 
+    @GetMapping("adminLogin")
+    @ApiOperation(value = "管理员登陆")
+    public Result adminLogin(String userName,String pwd){
+        if(StringUtils.isEmpty(userName)|| StringUtils.isEmpty(pwd)){
+            return new Result("用户名或密码不能为空！",null);
+        }
+        AdminUser adminUser = adminUserDao.findByUserName(userName);
+        if (adminUser == null) return new Result("未找到对应的系统用户！", null);
+
+        if (!adminUser.getPwd().equals(MD5.getMd5(pwd))) return new Result("用户名或密码错误！", null);
+
+        Map<String, Object> resultMap = new LinkedHashMap<>();
+        resultMap.put("id", adminUser.getId());
+        resultMap.put("角色", adminUser.getRole());
+        resultMap.put("用户名", adminUser.getUserName());
+        String jwt = JWTToken.buildAdminJwt(adminUser);
+        resultMap.put("token", jwt);
+        return new Result(resultMap);
+
+    }
 
 
-//    @GetMapping("updatePwd")
-//    @ApiOperation(value = "修改密码")
-//    public Result updatePwd(String newPwd, HttpServletRequest req){
-//        AdminUser adminUser = adminUserDao.findByUserName(userName);
-//        if(adminUser == null){
-//            return new Result("")
-//        }
-//        return null;
-//    }
+    @GetMapping("updatePwd")
+    @ApiOperation(value = "修改密码")
+    public Result updatePwd(String newPwd, HttpServletRequest req){
+        AdminUser adminUser = UserUtil.getAdminUserByReq(req,adminUserDao);
+        if(adminUser == null){
+            return new Result("加密字符串错误！");
+        }
+        adminUser.setPwd(MD5.getMd5(newPwd));
+        return new Result(adminUserDao.saveAndFlush(adminUser));
+    }
+
+    @GetMapping("deleteAdminUser")
+    @ApiOperation(value = "删除管理员用户")
+    public Result deleteAdminUser(String userName, HttpServletRequest req){
+        AdminUser adminUser = UserUtil.getAdminUserByReq(req,adminUserDao);
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        if(adminUser.getRole()!="超级管理员"){
+            return new Result("只有超级管理员能进行这项操作！");
+        }
+        AdminUser delUser = adminUserDao.findByUserName(userName);
+        if (delUser == null) return new Result("未找到对应的系统用户！", null);
+
+        adminUserDao.delete(delUser);
+        return new Result("删除成功 userName : "+ userName);
+    }
+
+    @GetMapping("deleteUser")
+    @ApiOperation(value = "删除用户")
+    public Result deleteUser(String userName) {
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
+
+        userDao.delete(user);
+        return new Result("删除成功 userName : "+ userName);
+    }
+
+    @GetMapping("updateUserMoney")
+    @ApiOperation(value = "修改用户小金库")
+    public Result updateUserMoney(String userName,Integer money){
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
+        user.setJkmoney(new BigDecimal(money));
+        return new Result(userDao.saveAndFlush(user));
+    }
+
 
 }
