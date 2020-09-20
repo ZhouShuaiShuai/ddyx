@@ -12,6 +12,7 @@ import org.game.util.StringUtils;
 import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +41,7 @@ public class UserController extends UserErrorController {
         return new Result(userService.findAll());
     }
 
-    @GetMapping("login")
+    @PostMapping("login")
     @ApiOperation(value = "用户登录")
     public Result login(String userName, String password) {
         if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password))

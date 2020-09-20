@@ -13,9 +13,7 @@ import org.game.util.MD5;
 import org.game.util.StringUtils;
 import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -38,7 +36,7 @@ public class AdminUserController {
     @Autowired
     private UserDao userDao;
 
-    @GetMapping("addAdminUser")
+    @PostMapping("addAdminUser")
     @ApiOperation(value = "添加管理员用户,默认登录密码123456")
     public Result addAdminUser(String userName){
         if(StringUtils.isEmpty(userName)){
@@ -53,7 +51,8 @@ public class AdminUserController {
         return new Result(resultUser);
     }
 
-    @GetMapping("adminLogin")
+//    @GetMapping("adminLogin")
+    @PostMapping("adminLogin")
     @ApiOperation(value = "管理员登陆")
     public Result adminLogin(String userName,String pwd){
         if(StringUtils.isEmpty(userName)|| StringUtils.isEmpty(pwd)){
@@ -75,7 +74,7 @@ public class AdminUserController {
     }
 
 
-    @GetMapping("updatePwd")
+    @PostMapping("updatePwd")
     @ApiOperation(value = "修改密码")
     public Result updatePwd(String newPwd, HttpServletRequest req){
         AdminUser adminUser = UserUtil.getAdminUserByReq(req,adminUserDao);
@@ -86,7 +85,7 @@ public class AdminUserController {
         return new Result(adminUserDao.saveAndFlush(adminUser));
     }
 
-    @GetMapping("deleteAdminUser")
+    @PostMapping("deleteAdminUser")
     @ApiOperation(value = "删除管理员用户")
     public Result deleteAdminUser(String userName, HttpServletRequest req){
         AdminUser adminUser = UserUtil.getAdminUserByReq(req,adminUserDao);
@@ -103,7 +102,7 @@ public class AdminUserController {
         return new Result("删除成功 userName : "+ userName);
     }
 
-    @GetMapping("deleteUser")
+    @PostMapping("deleteUser")
     @ApiOperation(value = "删除用户")
     public Result deleteUser(String userName) {
         if(StringUtils.isEmpty(userName)){
@@ -116,15 +115,27 @@ public class AdminUserController {
         return new Result("删除成功 userName : "+ userName);
     }
 
-    @GetMapping("updateUserMoney")
+    @PostMapping("updateUserJkMoney")
     @ApiOperation(value = "修改用户小金库")
-    public Result updateUserMoney(String userName,Integer money){
+    public Result updateUserJkMoney(String userName,Integer money){
         if(StringUtils.isEmpty(userName)){
             return new Result("参数不能为空！");
         }
         User user = userDao.findByUserName(userName);
         if (user == null) return new Result("未找到对应的系统用户！", null);
         user.setJkmoney(new BigDecimal(money));
+        return new Result(userDao.saveAndFlush(user));
+    }
+
+    @PostMapping("updateUserMoney")
+    @ApiOperation(value = "修改用户余额")
+    public Result updateUserMoney(String userName,Integer money){
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
+        user.setMoney(new BigDecimal(money));
         return new Result(userDao.saveAndFlush(user));
     }
 

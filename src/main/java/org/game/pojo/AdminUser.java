@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class AdminUser{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "AppSeqStore")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     private String userName;
