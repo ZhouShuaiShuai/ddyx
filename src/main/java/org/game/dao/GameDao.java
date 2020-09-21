@@ -1,6 +1,8 @@
 package org.game.dao;
 
 import org.game.pojo.Game;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +17,11 @@ import java.util.Map;
  */
 @Repository
 public interface GameDao extends JpaRepository<Game, Integer> {
+
+    @Query(value = "SELECT * FROM game WHERE re_time = 0",
+            countQuery = "SELECT count(*) FROM game WHERE re_time = 0",
+            nativeQuery = true)
+    Page<Game> findGames(Pageable pageable);
 
     @Query(value = "SELECT * FROM game where re_time < 1 group by id desc limit 10;",
             nativeQuery = true)

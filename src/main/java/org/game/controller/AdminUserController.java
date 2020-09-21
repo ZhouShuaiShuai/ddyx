@@ -3,17 +3,27 @@ package org.game.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.game.config.BittingValue;
 import org.game.dao.AdminUserDao;
+import org.game.dao.GameDao;
 import org.game.dao.UserDao;
+import org.game.dao.UserInfoDao;
 import org.game.filter.JWTToken;
 import org.game.pojo.AdminUser;
+import org.game.pojo.Game;
 import org.game.pojo.User;
+import org.game.pojo.UserInfo;
 import org.game.result.Result;
 import org.game.util.MD5;
 import org.game.util.StringUtils;
 import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import sun.awt.image.ImageWatched;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -35,6 +45,12 @@ public class AdminUserController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private GameDao gameDao;
+
+    @Autowired
+    private UserInfoDao userInfoDao;
 
     @PostMapping("addAdminUser")
     @ApiOperation(value = "添加管理员用户,默认登录密码123456")
@@ -137,6 +153,63 @@ public class AdminUserController {
         if (user == null) return new Result("未找到对应的系统用户！", null);
         user.setMoney(new BigDecimal(money));
         return new Result(userDao.saveAndFlush(user));
+    }
+
+    @PostMapping("updateUserPwd")
+    @ApiOperation(value = "重置登陆密码")
+    public Result updateUserPwd(String userName){
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
+        user.setPwd(MD5.getMd5("123456"));
+        return new Result(userDao.saveAndFlush(user));
+    }
+
+    @PostMapping("updateUserJkPwd")
+    @ApiOperation(value = "重置金库密码")
+    public Result updateUserJkPwd(String userName){
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
+        user.setJkpwd(MD5.getMd5("123456"));
+        return new Result(userDao.saveAndFlush(user));
+    }
+
+    @GetMapping("getNowGame")
+    @ApiOperation(value = "获取正在运行的游戏信息")
+    public Result getNowGame(){
+        Map<String,Object> resultMap = new LinkedHashMap<>();
+        resultMap.put("游戏信息",BittingValue.game);
+        Map<String,Map<Integer, Integer>> betMap = new LinkedHashMap<>();
+        for(Integer userId : BittingValue.betMap.keySet()){
+            betMap.put(userDao.findNameById(userId),BittingValue.betMap.get(userId));
+        }
+
+        resultMap.put("用户押注信息",betMap);
+
+        return new Result(resultMap);
+    }
+
+    @GetMapping("getGames")
+    @ApiOperation(value = "分页获取游戏信息")
+    public Result getGames(Integer pageIndex, Integer pageSize){
+        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.DESC, "id");
+        Page<Game> games = gameDao.findGames(pageable);
+        return new Result(games);
+    }
+
+    @GetMapping("AddUserInfo")
+    @ApiOperation(value = "手动添加牛人帮数据")
+    public Result AddUserInfo(UserInfo userInfo){
+        Game game = gameDao.findById(userInfo.getGameId()).get();
+        if(!game.getNumber().equals(userInfo.getNum())){
+            return new Result("输入的开奖数字和对应游戏的开奖数字不符",null);
+        }
+        return new Result(userInfoDao.save(userInfo));
     }
 
 
