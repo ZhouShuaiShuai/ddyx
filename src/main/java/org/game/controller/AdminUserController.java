@@ -212,5 +212,29 @@ public class AdminUserController {
         return new Result(userInfoDao.save(userInfo));
     }
 
+    @GetMapping("fh")
+    @ApiOperation(value = "封号")
+    public Result fh(String userName){
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
+        user.setIsUse(0);
+        return new Result(userDao.saveAndFlush(user));
+    }
+
+    @GetMapping("jf")
+    @ApiOperation(value = "解封")
+    public Result jf(String userName){
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
+        user.setIsUse(1);
+        return new Result(userDao.saveAndFlush(user));
+    }
+
 
 }
