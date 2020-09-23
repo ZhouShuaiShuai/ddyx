@@ -42,7 +42,7 @@ public class UserUtil {
             userInfo.setUserName(UserNameUtil.getName()+"");
             userInfo.setGameId(gameId);
             userInfo.setNum(num);
-            userInfo.setHeadImg(MD5.random.nextInt(15)+".jpg");
+            userInfo.setHeadImg(MD5.random.nextInt(1032)+".jpg");
             Integer tze = MD5.random.nextInt((i+10)*350);
             userInfo.setTz(tze);
             userInfo.setHl((tze/ Magnification.getPlByNum(num) +200+ MD5.random.nextInt(i+100))*Magnification.getPlByNum(num));

@@ -56,7 +56,17 @@ public class GameService {
         //把押注的金额加入奖池
         BittingValue.game.setJackpot(BittingValue.game.getJackpot().add(money));
         //把投注金额加入到计算的map中
-        BittingValue.betMap.put(user.getId(),betMap);
+        if(BittingValue.betMap.get(user.getId())!=null){
+            Map<Integer,Integer> bettingMap = BittingValue.betMap.get(user.getId());
+            for(int i=0;i<=27;i++){
+                if(bettingMap.get(i)!=null || betMap.get(i)!=null){
+                    bettingMap.put(i,bettingMap.get(i)+betMap.get(i));
+                }
+            }
+            BittingValue.betMap.put(user.getId(),bettingMap);
+        }else{
+            BittingValue.betMap.put(user.getId(),betMap);
+        }
 
         //加到虚拟的奖金池中
         BittingValue.moneyPool = BittingValue.moneyPool+(betMap.values().stream().mapToInt(c -> c).sum());

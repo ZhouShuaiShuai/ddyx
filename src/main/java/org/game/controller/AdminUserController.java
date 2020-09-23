@@ -202,15 +202,15 @@ public class AdminUserController {
         return new Result(games);
     }
 
-    @GetMapping("AddUserInfo")
-    @ApiOperation(value = "手动添加牛人帮数据")
-    public Result AddUserInfo(UserInfo userInfo){
-        Game game = gameDao.findById(userInfo.getGameId()).get();
-        if(!game.getNumber().equals(userInfo.getNum())){
-            return new Result("输入的开奖数字和对应游戏的开奖数字不符",null);
-        }
-        return new Result(userInfoDao.save(userInfo));
-    }
+//    @GetMapping("AddUserInfo")
+//    @ApiOperation(value = "手动添加牛人帮数据")
+//    public Result AddUserInfo(UserInfo userInfo){
+//        Game game = gameDao.findById(userInfo.getGameId()).get();
+//        if(!game.getNumber().equals(userInfo.getNum())){
+//            return new Result("输入的开奖数字和对应游戏的开奖数字不符",null);
+//        }
+//        return new Result(userInfoDao.save(userInfo));
+//    }
 
     @GetMapping("fh")
     @ApiOperation(value = "封号")
