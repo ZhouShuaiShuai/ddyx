@@ -2,8 +2,11 @@ package org.game.pojo;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author Zhouyf
@@ -13,6 +16,7 @@ import javax.persistence.*;
 @Data
 @Table(name = "userInfo" , indexes = {@Index(name = "game_id",  columnList="gameId")})
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class UserInfo {
 
     @Id
@@ -20,16 +24,20 @@ public class UserInfo {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
+    @CreatedDate
+    private Date createDate;
+
     private String userName;
 
     private String headImg;
     //投注
-    private Integer tz;
+    private long tz;
     //获利
-    private Integer hl;
+//    private Integer hl;
+    private long hl;
 
     //盈利
-    private Integer yl;
+    private long yl;
 
     private Integer gameId;
 

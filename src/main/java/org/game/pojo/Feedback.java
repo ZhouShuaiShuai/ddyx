@@ -21,6 +21,10 @@ public class Feedback {
     private String phoneOrMail;
     private Integer userId;
 
+    public Feedback(){
+
+    }
+
     public Feedback(String msg, String phoneOrMail, Integer userId) {
         this.msg = msg;
         this.phoneOrMail = phoneOrMail;

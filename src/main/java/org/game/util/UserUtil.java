@@ -36,10 +36,11 @@ public class UserUtil {
 
     public static List<UserInfo> init(Integer num , Integer gameId ){
         List<UserInfo> list = new LinkedList<>();
-        int length = MD5.random.nextInt(180)+50;
-        for(int i = 0; i<= length ; i++){
+
+        List<String> nameList = UserNameUtil.getNameList();
+        for(int i = 0; i< nameList.size() ; i++){
             UserInfo userInfo = new UserInfo();
-            userInfo.setUserName(UserNameUtil.getName()+"");
+            userInfo.setUserName(nameList.get(i));
             userInfo.setGameId(gameId);
             userInfo.setNum(num);
             userInfo.setHeadImg(MD5.random.nextInt(15)+".jpg");

@@ -172,7 +172,8 @@ public class GameService {
         for(Game game : userGames){
             List<UserInfo> userInfos = userInfoDao.findAllByGameId(game.getId());
             game.setWinNum(userInfos.size());
-            game.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+//            game.setJackpot(new BigDecimal(userInfos.stream().mapToInt(UserInfo::getHl).sum()));
+            game.setJackpot(new BigDecimal(userInfos.stream().mapToLong(UserInfo::getHl).sum()));
         }
 
         //设置中奖金额为用户中奖金额
@@ -268,7 +269,8 @@ public class GameService {
                         userInfo.setNum(checkNum);
 //                        userInfo.setTz(betMap.get(num));
                         userInfo.setTz(betMap.values().stream().mapToInt(c -> c).sum());
-                        userInfo.setHl(Integer.parseInt(money.toString()));
+//                        userInfo.setHl(Integer.parseInt(money.toString()));
+                        userInfo.setHl(Long.parseLong(money.toString()));
                         userInfo.setYl(userInfo.getHl()-userInfo.getTz());
                     }
                 }
@@ -276,7 +278,7 @@ public class GameService {
                 //累加每个数字投注的金额到jeMap中
 //                BittingValue.jeMap.put(num,betMap.get(num)+BittingValue.jeMap.get(num));
             }
-            if(userInfo.getYl()!= null && userInfo.getYl()>=0){
+            if(userInfo.getYl()>=0){
                 winList.add(userInfo);
             }
 
