@@ -105,6 +105,9 @@ public class GameController {
     @ApiOperation(value = "获取当前用户押注信息")
     public Result getUserBillInfo(HttpServletRequest req,Integer gameId){
         User user = UserUtil.getUserByReq(req, userDao);
+        if(gameId > BittingValue.game.getId()){
+            return new Result("查询的游戏还未开始！",null);
+        }
         return gameService.getUserBillInfo(user,gameId);
     }
 

@@ -1,5 +1,6 @@
 package org.game.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -184,13 +185,12 @@ public class AdminUserController {
     public Result getNowGame(){
         Map<String,Object> resultMap = new LinkedHashMap<>();
         resultMap.put("游戏信息",BittingValue.game);
-        Map<String,Map<Integer, Integer>> betMap = new LinkedHashMap<>();
+        Map<String,Object> betMap = new LinkedHashMap<>();
         for(Integer userId : BittingValue.betMap.keySet()){
-            betMap.put(userDao.findNameById(userId),BittingValue.betMap.get(userId));
+            betMap.put(userDao.findNameById(userId), JSON.toJSONString(BittingValue.betMap.get(userId)));
         }
 
         resultMap.put("用户押注信息",betMap);
-
         return new Result(resultMap);
     }
 
