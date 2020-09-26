@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.time.Year;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,21 +46,21 @@ public class RankingController {
     @GetMapping("findDayRanking")
     @ApiOperation(value = "获取今天的牛人榜")
     public Result findDayRanking(){
-        Map<String,Object> map = userInfoDao.findDayRanking();
+        List<Map<String,Object>> map = userInfoDao.findDayRanking();
         return new Result(map);
     }
 
     @GetMapping("findMonehRanking")
     @ApiOperation(value = "获取本月的牛人榜")
     public Result findMonehRanking(){
-        Map<String,Object> map = userInfoDao.findMonthRanking();
+        List<Map<String,Object>> map = userInfoDao.findMonthRanking();
         return new Result(map);
     }
 
     @GetMapping("findYearRanking")
     @ApiOperation(value = "获取本年的牛人榜")
     public Result findYearRanking(){
-        Map<String,Object> map = userInfoDao.findYearRanking();
+        List<Map<String,Object>> map = userInfoDao.findYearRanking();
         return new Result(map);
     }
 

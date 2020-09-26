@@ -34,10 +34,16 @@ public interface BettingModelDao extends JpaRepository<BettingModel, Integer>  {
             nativeQuery = true)
     String findMonth(Integer userId);
 
-    @Query(value = "select ye.game_id gameid ,ye.create_date date,ye.game_money money,(select `number` from game where id = ye.game_id) num " +
-            "from yebill ye where ye.user_id = ?1 ",
-            countQuery = "select count(*) " +
-                    "from yebill ye where ye.user_id = ?1 ",
+    @Query(value = "select ye.game_id gameid ,ye.create_date date,sum(ye.game_money) money,g.number num from yebill ye " +
+            "LEFT JOIN game g on g.id = ye.game_id " +
+            "where ye.user_id = ?1 " +
+            "and g.re_time = 0 " +
+            "GROUP BY ye.game_id ",
+            countQuery = "select count(*) from yebill ye " +
+                    "LEFT JOIN game g on g.id = ye.game_id " +
+                    "where ye.user_id = ?1 " +
+                    "and g.re_time = 0 " +
+                    "GROUP BY ye.game_id ",
             nativeQuery = true)
     List<Map<String,Object>> getWinOrLoserByGame(Integer userId, Pageable pageable);
 

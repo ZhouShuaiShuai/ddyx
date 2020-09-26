@@ -45,7 +45,8 @@ public class GameScheduled {
     }
 
     @Async
-    @Scheduled(initialDelay=10000, fixedRate=90000)
+//    @Scheduled(initialDelay=10000, fixedRate=90000)
+    @Scheduled(fixedRate=90000)
     public void startModel(){
         //投入自动押注的金额
         while (true){

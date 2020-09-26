@@ -16,6 +16,8 @@ public class Messages {
 
     private String message;
 
-    private boolean use;
+    private Integer is_use;
+
+    public Messages(){}
 
 }

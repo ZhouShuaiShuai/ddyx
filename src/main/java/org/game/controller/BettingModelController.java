@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import sun.awt.image.ImageWatched;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -95,12 +96,15 @@ public class BettingModelController {
             BittingValue.startModelCon.remove(user.getId());
             return new Result(null);
         }else {
-            startConfMap.put("投注期数",startConfMap.get("num"));
-            startConfMap.put("剩余期数",confMap.get("num"));
+            Map<String,Object> resultMap = new LinkedHashMap<>();
+            resultMap.put("投注期数",startConfMap.get("num"));
+            resultMap.put("剩余期数",BittingValue.modelCon.get(user.getId()).get("num"));
+            resultMap.put("max",BittingValue.modelCon.get(user.getId()).get("max"));
+            resultMap.put("min",BittingValue.modelCon.get(user.getId()).get("min"));
+            resultMap.put("startGameId",BittingValue.startModelCon.get(user.getId()).get("startGameId"));
+            resultMap.put("startModelId",BittingValue.startModelCon.get(user.getId()).get("startModelId"));
             return new Result(startConfMap);
         }
-
-
 
     }
 

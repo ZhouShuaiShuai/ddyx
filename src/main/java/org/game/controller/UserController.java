@@ -58,6 +58,8 @@ public class UserController extends UserErrorController {
         if (userName == null) return new Result("请输入用户名！", null);
         User userRegister = userService.findUserByPhone(phone);
         if (userRegister != null) return new Result("该手机号码已被注册！", null);
+        User userNameRes = userDao.findByUserName(userName);
+        if(userNameRes != null) return new Result("该用户名已被注册！", null);
 
         /**
          * @TODO yzm

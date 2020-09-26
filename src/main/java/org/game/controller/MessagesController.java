@@ -28,7 +28,7 @@ public class MessagesController {
     @GetMapping("findUse")
     @ApiOperation(value = "获取正在使用的")
     public Result findUse(){
-        Messages messages = messagesDao.findFirstByIsUse(true);
+        Messages messages = messagesDao.findFirstByIsUse();
         return new Result(messages);
     }
 
@@ -37,7 +37,7 @@ public class MessagesController {
     public Result addMessages(String msg){
         Messages messages = new Messages();
         messages.setMessage(msg);
-        messages.setUse(false);
+        messages.setIs_use(0);
         return new Result(messagesDao.save(messages));
     }
 
@@ -52,7 +52,7 @@ public class MessagesController {
     @ApiOperation(value = "禁用喇叭通知")
     public Result closeMessages(Integer id){
         Messages messages = messagesDao.findById(id).get();
-        messages.setUse(false);
+        messages.setIs_use(0);
         return new Result(messagesDao.saveAndFlush(messages));
     }
 
@@ -60,7 +60,7 @@ public class MessagesController {
     @ApiOperation(value = "启用喇叭通知")
     public Result openMessages(Integer id){
         Messages messages = messagesDao.findById(id).get();
-        messages.setUse(true);
+        messages.setIs_use(1);
         return new Result(messagesDao.saveAndFlush(messages));
     }
 

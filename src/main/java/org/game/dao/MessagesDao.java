@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessagesDao extends JpaRepository<Messages,Integer> {
 
-    @Query(value = "SELECT * FROM messages WHERE `use` = ?1",
+    @Query(value = "SELECT * FROM dmessages WHERE `is_use` = 1",
             nativeQuery = true)
-    Messages findFirstByIsUse(boolean isUse);
+    Messages findFirstByIsUse();
 
 }
