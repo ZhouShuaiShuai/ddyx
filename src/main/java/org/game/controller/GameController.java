@@ -115,6 +115,7 @@ public class GameController {
     @ApiOperation(value = "游戏结束，返回选取的数字用于做用户结算{后台}")
     public Result endCom(Integer num){
         if(num == null) return new Result("num为空！",null);
+        if(BittingValue.falg) return new Result("当前游戏系统已自动开奖！剩余游戏时间："+ BittingValue.game.getReTime());
         return gameService.end(num);
     }
 

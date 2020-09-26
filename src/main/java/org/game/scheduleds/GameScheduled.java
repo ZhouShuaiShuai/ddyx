@@ -68,11 +68,16 @@ public class GameScheduled {
     @Scheduled(initialDelay=80000, fixedRate=90000)
     public void endGame(){
         boolean flag = true;
-        while (flag){
-            Integer num = MD5.random.nextInt(28);
-            if(BittingValue.ylMap.get(num)!=null && BittingValue.ylMap.get(num).compareTo(BittingValue.minRate)>=0){
-                gameService.end(num);
-                flag=false;
+        if(BittingValue.falg){
+            while (flag){
+                Integer num = MD5.random.nextInt(28);
+                if(BittingValue.flagModel){
+                    gameService.end(num);
+                    flag=false;
+                }else  if(BittingValue.ylMap.get(num)!=null && BittingValue.ylMap.get(num).compareTo(BittingValue.minRate)>=0){
+                    gameService.end(num);
+                    flag=false;
+                }
             }
         }
         bettingService.endModel();

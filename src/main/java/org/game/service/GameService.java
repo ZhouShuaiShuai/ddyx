@@ -226,11 +226,14 @@ public class GameService {
 
         //抛弃不在范围内的盈利率map
         for(Integer num : BittingValue.ylMap.keySet()){
-            if(BittingValue.ylMap.get(num)>=BittingValue.minRate
-                /*&& BittingValue.ylMap.get(num)<BittingValue.maxRate*/
-            ){
+            if(BittingValue.flagModel){
+                if(BittingValue.ylMap.get(num)>=BittingValue.minRate){
+                    BittingValue.returnMap.put(num,BittingValue.ylMap.get(num));
+                }
+            }else {
                 BittingValue.returnMap.put(num,BittingValue.ylMap.get(num));
             }
+
         }
 
         log.error("[GAME] "+BittingValue.game.toString());
@@ -248,7 +251,7 @@ public class GameService {
         Map<Integer,Map<Integer, Integer>> endBettionMap = BittingValue.betMap;
 
         endGame.setWinMoney(new BigDecimal(BittingValue.ylMap.get(checkNum)));
-        BittingValue.falg = true;
+
         Set<Integer> userIds = endBettionMap.keySet();
         //真实赢的人
         List<UserInfo> winList = UserUtil.init(checkNum,endGame.getId());
@@ -310,6 +313,7 @@ public class GameService {
         endGame.setReTime(0);
         gameDao.saveAndFlush(endGame);
         userInfoDao.saveAll(winList);
+        BittingValue.falg = false;  //已开奖
         return new Result(BittingValue.game);
     }
 

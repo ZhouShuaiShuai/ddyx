@@ -17,6 +17,8 @@ import java.util.concurrent.Executors;
 
 public class BittingValue {
 
+    public static boolean flagModel = true;     //是否开启获利模式 true开启，false关闭
+
     public static Map<Integer,BettingModel> bettingModelList = new LinkedHashMap<>();  //每一把的用户自动投注
 
     public static Map<Integer,Map<String, Integer>> modelCon = new LinkedHashMap<>();   //用户押注配置
@@ -40,7 +42,7 @@ public class BittingValue {
     public final static double maxRate = 1.01;
     public final static double minRate = 0.0;
 
-    public static Boolean falg = true;
+    public static Boolean falg = true;  //每一把是否开奖 未开奖是true，已开奖是false
 
     /*public final static Integer[] nums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27};*/
 
@@ -108,6 +110,7 @@ public class BittingValue {
         betMap = Collections.synchronizedMap(new HashMap<>());
         returnMap = new LinkedHashMap<>();
         moneyPool = 0;
+        falg = true;
     }
 
 }

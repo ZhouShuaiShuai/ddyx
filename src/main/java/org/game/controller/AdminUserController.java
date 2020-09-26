@@ -50,9 +50,6 @@ public class AdminUserController {
     @Autowired
     private GameDao gameDao;
 
-    @Autowired
-    private UserInfoDao userInfoDao;
-
     @PostMapping("addAdminUser")
     @ApiOperation(value = "添加管理员用户,默认登录密码123456")
     public Result addAdminUser(String userName){
@@ -197,6 +194,7 @@ public class AdminUserController {
     @GetMapping("getGames")
     @ApiOperation(value = "分页获取游戏信息")
     public Result getGames(Integer pageIndex, Integer pageSize){
+        pageIndex = pageIndex-1;
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.DESC, "id");
         Page<Game> games = gameDao.findGames(pageable);
         return new Result(games);
@@ -224,6 +222,19 @@ public class AdminUserController {
         if (user == null) return new Result("未找到对应的系统用户！", null);
         user.setIsUse(1);
         return new Result(userDao.saveAndFlush(user));
+    }
+
+    @PostMapping("updateModel")
+    @ApiOperation(value = "修改没把游戏是否获利")
+    public Result updateModel(boolean modelFlag){
+        BittingValue.flagModel = modelFlag;
+        return new Result(BittingValue.flagModel);
+    }
+
+    @GetMapping("getModel")
+    @ApiOperation(value = "查看是否获利的状态")
+    public Result getModel(){
+        return new Result(BittingValue.flagModel);
     }
 
 
