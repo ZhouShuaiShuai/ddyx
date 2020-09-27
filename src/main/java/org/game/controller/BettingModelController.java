@@ -99,6 +99,7 @@ public class BettingModelController {
             Map<String,Object> resultMap = new LinkedHashMap<>();
             resultMap.put("投注期数",startConfMap.get("num"));
             resultMap.put("剩余期数",BittingValue.modelCon.get(user.getId()).get("num"));
+            resultMap.put("已投期数",startConfMap.get("num") - BittingValue.modelCon.get(user.getId()).get("num"));
             resultMap.put("max",BittingValue.modelCon.get(user.getId()).get("max"));
             resultMap.put("min",BittingValue.modelCon.get(user.getId()).get("min"));
             resultMap.put("startGameId",BittingValue.startModelCon.get(user.getId()).get("startGameId"));

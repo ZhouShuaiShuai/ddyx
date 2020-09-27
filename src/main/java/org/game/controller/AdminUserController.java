@@ -5,15 +5,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.game.config.BittingValue;
-import org.game.dao.AdminUserDao;
-import org.game.dao.GameDao;
-import org.game.dao.UserDao;
-import org.game.dao.UserInfoDao;
+import org.game.dao.*;
 import org.game.filter.JWTToken;
-import org.game.pojo.AdminUser;
-import org.game.pojo.Game;
-import org.game.pojo.User;
-import org.game.pojo.UserInfo;
+import org.game.pojo.*;
 import org.game.result.Result;
 import org.game.util.MD5;
 import org.game.util.StringUtils;
@@ -49,6 +43,12 @@ public class AdminUserController {
 
     @Autowired
     private GameDao gameDao;
+
+    @Autowired
+    private JkBillDao jkBillDao;
+
+    @Autowired
+    private YeBillDao yeBillDao;
 
     @PostMapping("addAdminUser")
     @ApiOperation(value = "添加管理员用户,默认登录密码123456")
@@ -138,6 +138,8 @@ public class AdminUserController {
         User user = userDao.findByUserName(userName);
         if (user == null) return new Result("未找到对应的系统用户！", null);
         user.setJkmoney(new BigDecimal(money));
+        JkBill jkBill = new JkBill(new BigDecimal(money),"管理员修改小金库余额",user);
+        jkBillDao.save(jkBill);
         return new Result(userDao.saveAndFlush(user));
     }
 
@@ -150,6 +152,8 @@ public class AdminUserController {
         User user = userDao.findByUserName(userName);
         if (user == null) return new Result("未找到对应的系统用户！", null);
         user.setMoney(new BigDecimal(money));
+        YeBill yeBill = new YeBill(new BigDecimal(money),"管理员修改余额",user);
+        yeBillDao.save(yeBill);
         return new Result(userDao.saveAndFlush(user));
     }
 

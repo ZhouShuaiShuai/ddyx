@@ -114,8 +114,9 @@ public class GameService {
 //            games = gameDao.find20GameByUser(user.getId());
             games = gameDao.find20Games(user.getId());
 
-            Map<Integer, Integer> betMap =  BittingValue.betMap.get(user.getId());
-            if(betMap!=null && !betMap.isEmpty()){
+            Map<String, Integer> con =  BittingValue.modelCon.get(user.getId());
+            Map<String, Integer> startCon =  BittingValue.startModelCon.get(user.getId());
+            if(con!=null && !con.isEmpty()&&startCon!=null && !startCon.isEmpty()){
                 flagConf = true;
             }
 //            for(Game userGame :games){

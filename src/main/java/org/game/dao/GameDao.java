@@ -47,7 +47,7 @@ public interface GameDao extends JpaRepository<Game, Integer> {
                     "g.number,g.start_time,g.numbers,g.re_time,g.end_time, " +
                     "(select sum(game_money) from yebill where game_id = g.id and user_id = ?1) as win_money " +
                     "FROM game g " +
-                    "where re_time < 1 " +
+                    "where re_time < 1 and end_time < now()" +
                     "group by g.id desc limit 20",
             nativeQuery = true)
     List<Game> find20Games(Integer userId);
