@@ -21,19 +21,19 @@ public interface UserInfoDao extends JpaRepository<UserInfo,Integer> {
 
     List<UserInfo> findAllByGameId(Integer gameId);
 
-    @Query(value = "select ui.user_name,sum(ui.hl) hl from user_info ui " +
+    @Query(value = "select ui.user_name,ui.head_img ,sum(ui.hl) hl from user_info ui " +
             "where DATE_FORMAT( ui.create_date,'%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') " +
             "GROUP BY ui.user_name ORDER BY hl desc LIMIT 50 ",
             nativeQuery = true)
     List<Map<String,Object>> findDayRanking();
 
-    @Query(value = "select ui.user_name,sum(ui.hl) hl from user_info ui " +
+    @Query(value = "select ui.user_name,ui.head_img ,sum(ui.hl) hl from user_info ui " +
             "where DATE_FORMAT( ui.create_date,'%Y-%m') = DATE_FORMAT(now(), '%Y-%m') " +
             "GROUP BY ui.user_name ORDER BY hl desc LIMIT 50 ",
             nativeQuery = true)
     List<Map<String,Object>> findMonthRanking();
 
-    @Query(value = "select ui.user_name,sum(ui.hl) hl from user_info ui " +
+    @Query(value = "select ui.user_name,ui.head_img ,sum(ui.hl) hl from user_info ui " +
             "where DATE_FORMAT( ui.create_date,'%Y') = DATE_FORMAT(now(), '%Y') " +
             "GROUP BY ui.user_name ORDER BY hl desc LIMIT 50 ",
             nativeQuery = true)

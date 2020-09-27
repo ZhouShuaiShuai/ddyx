@@ -137,8 +137,9 @@ public class AdminUserController {
         }
         User user = userDao.findByUserName(userName);
         if (user == null) return new Result("未找到对应的系统用户！", null);
+        BigDecimal mon = new BigDecimal(money).subtract(user.getJkmoney());
         user.setJkmoney(new BigDecimal(money));
-        JkBill jkBill = new JkBill(new BigDecimal(money),"管理员修改小金库余额",user);
+        JkBill jkBill = new JkBill(mon,"管理员充值小金库",user);
         jkBillDao.save(jkBill);
         return new Result(userDao.saveAndFlush(user));
     }
@@ -151,8 +152,9 @@ public class AdminUserController {
         }
         User user = userDao.findByUserName(userName);
         if (user == null) return new Result("未找到对应的系统用户！", null);
+        BigDecimal mon = new BigDecimal(money).subtract(user.getMoney());
         user.setMoney(new BigDecimal(money));
-        YeBill yeBill = new YeBill(new BigDecimal(money),"管理员修改余额",user);
+        YeBill yeBill = new YeBill(mon,"管理员充值余额",user);
         yeBillDao.save(yeBill);
         return new Result(userDao.saveAndFlush(user));
     }

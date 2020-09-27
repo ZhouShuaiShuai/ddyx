@@ -104,7 +104,7 @@ public class BettingModelController {
             resultMap.put("min",BittingValue.modelCon.get(user.getId()).get("min"));
             resultMap.put("startGameId",BittingValue.startModelCon.get(user.getId()).get("startGameId"));
             resultMap.put("startModelId",BittingValue.startModelCon.get(user.getId()).get("startModelId"));
-            return new Result(startConfMap);
+            return new Result(resultMap);
         }
 
     }

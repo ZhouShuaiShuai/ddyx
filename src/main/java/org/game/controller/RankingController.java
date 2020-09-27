@@ -22,11 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Zhouyf
- * @Data 2020-08-13  21:48
- * 数据排行
- */
+
 @RestController
 @RequestMapping(value = "ranking")
 @Api(tags = {"排行接口"})
