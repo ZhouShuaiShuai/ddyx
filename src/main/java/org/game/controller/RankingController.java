@@ -39,7 +39,7 @@ public class RankingController {
         return new Result(userInfoDao.findAllByGameIdOrderByYlDesc(gameId,pageable));
     }
 
-    @GetMapping("findDayRanking")
+/*    @GetMapping("findDayRanking")
     @ApiOperation(value = "获取今天的牛人榜")
     public Result findDayRanking(){
         List<Map<String,Object>> map = userInfoDao.findDayRanking();
@@ -67,6 +67,6 @@ public class RankingController {
         userInfo.setUserName(userName);
         userInfo.setHl(hl);
         return new Result(userInfoDao.save(userInfo));
-    }
+    }*/
 
 }

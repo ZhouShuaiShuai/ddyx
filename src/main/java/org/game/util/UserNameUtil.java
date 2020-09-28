@@ -1,14 +1,8 @@
 package org.game.util;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Zhouyf
- * @Data 2020-08-13  22:01
- */
 
 public class UserNameUtil {
 
