@@ -3,7 +3,9 @@ package org.game.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.game.dao.JkBillDao;
 import org.game.dao.UserDao;
+import org.game.pojo.JkBill;
 import org.game.pojo.User;
 import org.game.result.Result;
 import org.game.service.UserService;
@@ -34,6 +36,9 @@ public class UserController extends UserErrorController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private JkBillDao jkBillDao;
 
     @GetMapping("findAll")
     @ApiOperation(value = "获取所有用户信息{后台}")
@@ -73,12 +78,15 @@ public class UserController extends UserErrorController {
         user.setJkpwd(MD5.getMd5(jkpwd));
         user.setPwd(MD5.getMd5(pwd1));
         user.setMoney(BigDecimal.valueOf(0));
-        user.setJkmoney(BigDecimal.valueOf(0));
+        user.setJkmoney(BigDecimal.valueOf(100000));    //注册送十万
         user.setIsUse(1);
         user.setYqm(StringUtils.getYzm(8));
         //(数据类bai型)(最小值du+Math.random()*(最大值-最小值+1))
         int i = (int) (1 + Math.random() * (20 - 1 + 1));
         user.setHeadImg(i + ".jpg");
+
+        JkBill jkBill = new JkBill(BigDecimal.valueOf(100000),"新用户注册",user);
+        jkBillDao.save(jkBill);
         return userService.addUser(user);
     }
 
