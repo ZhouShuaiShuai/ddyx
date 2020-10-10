@@ -60,7 +60,7 @@ public class GameController {
                 return new Result("投注金额不能大于一千万",null);
             }
         }
-        if(BittingValue.game.getReTime()<15){
+        if(BittingValue.game.getReTime()<30){
             return new Result("投注已截至！",null);
         }
 

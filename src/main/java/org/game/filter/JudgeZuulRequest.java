@@ -71,6 +71,12 @@ public class JudgeZuulRequest {
                         || path.contains("/ranking/findRanking")
                         || path.contains("/game/findGameState")
                         || path.contains("/adminUser/adminLogin")
+                        || path.contains("/image/getLbImage")
+                        || path.contains("/image/findLbImage")
+                        || path.contains("/image/getGgImage")
+                        || path.contains("/image/findGgImage")
+                        || path.contains("/messages/findAll")
+                        || path.contains("/messages/findUse")
                 )
                     filterChain.doFilter(servletRequest, servletResponse);
                 else {

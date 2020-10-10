@@ -46,7 +46,7 @@ public class Game {
 
     public Game(){
         startTime = new Date();
-        endTime = new Date(System.currentTimeMillis()+90000);
+        endTime = new Date(System.currentTimeMillis()+150000);
 //        endTime = new Date(System.currentTimeMillis()+10000);
         reTime = Integer.parseInt(Long.toString((endTime.getTime()-System.currentTimeMillis())/1000));
         jackpot = new BigDecimal(0);

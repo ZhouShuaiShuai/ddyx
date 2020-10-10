@@ -22,8 +22,8 @@ import java.util.List;
 @Slf4j
 public class ImageController {
 
-    private final static String path = "D:/home/img/";
-    private final static String path2 = "D:/home/img2/";
+    private final static String path = "/home/img/";
+    private final static String path2 = "/home/img2/";
 
     @PostMapping("saveLbImage")
     @ApiOperation(value = "保存轮播图")

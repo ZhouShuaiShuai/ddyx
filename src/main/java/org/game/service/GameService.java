@@ -348,7 +348,7 @@ public class GameService {
         Runnable startCom = (() -> {
             Boolean falg = true;
             while (falg){
-                if(BittingValue.game!=null && BittingValue.game.getReTime()<15 && BittingValue.game.getReTime()>10){
+                if(BittingValue.game!=null && BittingValue.game.getReTime()<30 && BittingValue.game.getReTime()>10){
                     this.start();
                     falg = false;
                 }else {

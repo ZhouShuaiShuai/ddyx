@@ -30,7 +30,7 @@ public class GameScheduled {
      * fixedDelay 表示任务执行之间的时间间隔，具体是指两次任务的结束时间间隔。
      */
     @Async
-    @Scheduled(fixedRate = 90000)
+    @Scheduled(fixedRate = 150000)
 //    @Scheduled(fixedRate = 10000)
     public void startGame(){
         BittingValue.initBittingValue(BittingValue.game,bettingService);
@@ -42,7 +42,7 @@ public class GameScheduled {
 
     @Async
 //    @Scheduled(initialDelay=10000, fixedRate=90000)
-    @Scheduled(fixedRate=90000)
+    @Scheduled(fixedRate=150000)
     public void startModel(){
         //投入自动押注的金额
         while (true){
@@ -62,7 +62,7 @@ public class GameScheduled {
 
 
     @Async
-    @Scheduled(initialDelay=80000, fixedRate=90000)
+    @Scheduled(initialDelay=140000, fixedRate=150000)
     public void endGame(){
         boolean flag = true;
         if(BittingValue.falg){
