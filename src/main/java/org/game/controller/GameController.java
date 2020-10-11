@@ -119,12 +119,12 @@ public class GameController {
         return gameService.end(num);
     }
 
-    @GetMapping("renewGame")
-    @ApiOperation(value = "用户按照上一把的续压")
-    public Result renewGame(HttpServletRequest req){
-        User user = UserUtil.getUserByReq(req, userDao);
-        return gameService.renewGame(user);
-    }
+//    @GetMapping("renewGame")
+//    @ApiOperation(value = "用户按照上一把的续压")
+//    public Result renewGame(HttpServletRequest req){
+//        User user = UserUtil.getUserByReq(req, userDao);
+//        return gameService.renewGame(user);
+//    }
 
     @GetMapping("findGameState")
     @ApiOperation(value = "获取当前游戏信息状态")

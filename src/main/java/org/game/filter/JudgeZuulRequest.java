@@ -77,6 +77,7 @@ public class JudgeZuulRequest {
                         || path.contains("/image/findGgImage")
                         || path.contains("/messages/findAll")
                         || path.contains("/messages/findUse")
+                        || path.contains("/nrb/sel")
                 )
                     filterChain.doFilter(servletRequest, servletResponse);
                 else {

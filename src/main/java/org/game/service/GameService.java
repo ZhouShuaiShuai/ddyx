@@ -116,7 +116,11 @@ public class GameService {
 
             Map<String, Integer> con =  BittingValue.modelCon.get(user.getId());
             Map<String, Integer> startCon =  BittingValue.startModelCon.get(user.getId());
-            if(con!=null && !con.isEmpty()&&startCon!=null && !startCon.isEmpty()){
+            //判断当前用户是否投注
+//            if(con!=null && !con.isEmpty()&&startCon!=null && !startCon.isEmpty()){
+//                flagConf = true;
+//            }
+            if(BittingValue.betMap.get(user.getId())!=null){
                 flagConf = true;
             }
 //            for(Game userGame :games){
@@ -364,6 +368,8 @@ public class GameService {
     }
 
     public Result getUserBillInfo(User user,Integer gameId){
+        System.out.println("betMap : "+BittingValue.betMap);
+        System.out.println("betMap2 : "+BittingValue.betMap2);
         if(BittingValue.game.getId().equals(gameId)){
             return new Result(new LinkedHashMap<String,Object>(){
                 {
@@ -372,8 +378,8 @@ public class GameService {
                     put("当前用户投注额", ((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
                     }
                     put("当前剩余时间",BittingValue.game.getReTime());
-                    if(BittingValue.betMap.get(user.getId())!=null) {
-                        put("上期压住信息",BittingValue.betMap2.get(user.getId()));
+                    if(BittingValue.betMap2.get(user.getId())!=null) {
+                        put("上期压住信息",JSON.toJSONString(BittingValue.betMap2.get(user.getId())));
                     }else{
                         put("上期压住信息",null);
                     }

@@ -29,7 +29,7 @@ public class BittingValue {
     /**
      * 每局投注的数字和金额的总和，每一个用户投注都会向里面添加
      */
-    public static Map<Integer,Map<Integer, Integer>> betMap;
+    public static Map<Integer,Map<Integer, Integer>> betMap=new LinkedHashMap<>();
     /**
      * 上一把用户的投注金额，方便续压
      */
@@ -54,11 +54,14 @@ public class BittingValue {
      * 每一把初始化
      */
     public static void initBittingValue(Game game, BettingService bettingService){
+        System.out.println("XXX"+betMap);
+        System.out.println("XXX"+betMap2);
         bettingModelList = new LinkedHashMap<>();
         /**
          * 把上一把的押注金额放入到betMap2中方便续压
          */
         if(null!=betMap && !betMap.isEmpty()) {
+            BittingValue.betMap2 = new LinkedHashMap<>();
             BittingValue.betMap2.putAll(betMap);
 
             List<Betting> bettingList = new ArrayList<>();
@@ -111,6 +114,8 @@ public class BittingValue {
         returnMap = new LinkedHashMap<>();
         moneyPool = 0;
         falg = true;
+        System.out.println("DDD"+betMap);
+        System.out.println("DDD"+betMap2);
     }
 
 }
