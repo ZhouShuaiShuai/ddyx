@@ -24,9 +24,10 @@ public class NrbController {
 
     @GetMapping("add")
     @ApiOperation(value = "添加牛人榜")
-    public Result add(String name,long hl,String type){
+    public Result add(String name,long hl,String type,long jl){
         Nrb nrb = new Nrb();
         nrb.setHl(hl);
+        nrb.setJl(jl);
         nrb.setName(name);
         nrb.setType(type);
         nrb.setHead_img(MD5.random.nextInt(1032)+".jpg");

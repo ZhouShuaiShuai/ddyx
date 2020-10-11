@@ -18,6 +18,7 @@ public class Nrb {
     private String head_img;
 
     private long hl;
+    private long jl;
 
     private String name;
 

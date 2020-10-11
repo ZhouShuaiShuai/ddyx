@@ -103,7 +103,7 @@ public class GameService {
 
         Game game = new Game(BittingValue.game);
         //奖金池设置
-        Integer moneyPool = BittingValue.moneyPool + (100-game.getReTime())*(MD5.random.nextInt(20)+200);
+        Integer moneyPool = BittingValue.moneyPool + (160-game.getReTime())*(MD5.random.nextInt(20)+200);
 
         game.setJackpot(new BigDecimal(moneyPool));
         BittingValue.moneyPool = moneyPool;
@@ -372,6 +372,11 @@ public class GameService {
                     put("当前用户投注额", ((BittingValue.betMap.get(user.getId()).values()).stream().mapToInt(c -> c).sum()));
                     }
                     put("当前剩余时间",BittingValue.game.getReTime());
+                    if(BittingValue.betMap.get(user.getId())!=null) {
+                        put("上期压住信息",BittingValue.betMap2.get(user.getId()));
+                    }else{
+                        put("上期压住信息",null);
+                    }
                 }});
         }else {
             Game game = gameDao.findById(gameId).get();
