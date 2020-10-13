@@ -46,7 +46,7 @@ public class UserUtil {
             userInfo.setHeadImg(MD5.random.nextInt(1032)+".jpg");
             Integer tze = MD5.random.nextInt((i+10)*350);
             userInfo.setTz(tze);
-            userInfo.setHl((tze/ Magnification.getPlByNum(num) +200+ MD5.random.nextInt(i+100))*Magnification.getPlByNum(num));
+            userInfo.setHl((tze/ Magnification.getPlByNum(num) +200+ MD5.random.nextInt(i+100))*Magnification.getPlByNum(num)*100);
             userInfo.setYl(userInfo.getHl()-userInfo.getTz());
             list.add(userInfo);
         }
