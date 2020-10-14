@@ -1,5 +1,6 @@
 package org.game.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,39 @@ public class GameController {
     @ApiOperation(value = "获取游戏间隔")
     public Result findNumJg(){
         return gameService.findNumJg();
+    }
+
+    @GetMapping("getBeetingGame")
+    @ApiOperation(value = "获取预投注")
+    public Result getBeetingGame(HttpServletRequest req,Integer gameId){
+        User user = UserUtil.getUserByReq(req, userDao);
+        if(BittingValue.betMapf.get(gameId)!=null){
+            Map<Integer,Map<Integer, Integer>> userMap = BittingValue.betMapf.get(gameId);
+            if(userMap.get(user.getId())!=null){
+                return new Result(JSON.toJSONString(userMap.get(user.getId())));
+            }
+        }
+        return new Result("");
+    }
+
+    @GetMapping("setBeetingGame")
+    @ApiOperation(value = "设置预投注")
+    public Result setBeetingGame(HttpServletRequest req,Integer gameId,@RequestParam(value = "nums")List<Integer> nums,@RequestParam(value = "counts")List<Integer> counts){
+        User user = UserUtil.getUserByReq(req, userDao);
+        if(nums.size()<=0 || counts.size() <=0 || nums.size()!=counts.size()) return new Result("投注数量为空！或者不一致！",null);
+        for(Integer count : counts){
+            if(count > 10000000){
+                return new Result("投注金额不能大于一千万",null);
+            }
+        }
+        Map<Integer, Integer> betMap = new LinkedHashMap<>();
+        for(int i =0;i<nums.size();i++){
+            betMap.put(nums.get(i),counts.get(i));
+        }
+        Map<Integer,Map<Integer, Integer>> userMap = new LinkedHashMap<>();
+        userMap.put(user.getId(),betMap);
+        BittingValue.betMapf.put(gameId,userMap);
+        return new Result("OK");
     }
 
     @GetMapping("betting")

@@ -11,6 +11,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * 游戏定时任务
  */
@@ -40,6 +44,27 @@ public class GameScheduled {
 
     }
 
+
+    public static void main(String[] args) {
+        Map<Integer,String> testMap = new LinkedHashMap<>();
+        testMap.put(1,"1");
+        testMap.put(2,"2");
+        testMap.put(3,"3");
+        testMap.put(4,"4");
+        testMap.put(5,"5");
+        System.out.println(testMap);
+        Iterator<Integer> it = testMap.keySet().iterator();
+        while ( it.hasNext()) {
+            Integer integer = it.next();
+            if(integer>3){
+                it.remove();
+                testMap.remove(integer);
+            }
+        }
+        System.out.println(testMap);
+
+    }
+
     @Async
 //    @Scheduled(initialDelay=10000, fixedRate=90000)
     @Scheduled(fixedRate=150000)
@@ -48,6 +73,16 @@ public class GameScheduled {
         while (true){
             if(BittingValue.game.getReTime() > 20){
                 bettingService.model();
+
+                //去掉预押注map中多余的值
+                Iterator<Integer> it = BittingValue.betMapf.keySet().iterator();
+                while ( it.hasNext()) {
+                    Integer integer = it.next();
+                    if(integer>3){
+                        it.remove();
+                        BittingValue.betMapf.remove(integer);
+                    }
+                }
                 break;
             }else {
                 try {

@@ -60,7 +60,13 @@ public class GameService {
             Map<Integer,Integer> bettingMap = BittingValue.betMap.get(user.getId());
             for(int i=0;i<=27;i++){
                 if(bettingMap.get(i)!=null || betMap.get(i)!=null){
-                    bettingMap.put(i,bettingMap.get(i)+betMap.get(i));
+                    if(bettingMap.get(i)!=null && betMap.get(i)!=null){
+                        bettingMap.put(i,bettingMap.get(i)+betMap.get(i));
+                    }else if(bettingMap.get(i)!=null){
+                        bettingMap.put(i,bettingMap.get(i));
+                    }else if(betMap.get(i)!=null){
+                        bettingMap.put(i,betMap.get(i));
+                    }
                 }
             }
             BittingValue.betMap.put(user.getId(),bettingMap);

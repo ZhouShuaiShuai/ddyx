@@ -31,6 +31,10 @@ public class BittingValue {
      */
     public static Map<Integer,Map<Integer, Integer>> betMap=new LinkedHashMap<>();
     /**
+     * 未开始的用户投资信息
+     */
+    public static Map<Integer,Map<Integer,Map<Integer, Integer>>> betMapf=new LinkedHashMap<>();
+    /**
      * 上一把用户的投注金额，方便续压
      */
     public static Map<Integer,Map<Integer, Integer>> betMap2=new LinkedHashMap<>();
