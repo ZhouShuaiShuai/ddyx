@@ -74,10 +74,10 @@ public interface GameDao extends JpaRepository<Game, Integer> {
             "g.id - (select g2.id from game g2 where if(g2.number BETWEEN 10 AND 17 ,'中','边') = if(g.number BETWEEN 10 AND 17 ,'中','边') and g2.id <= g.id ORDER BY g2.id desc limit 1,1) as zbjg," +
             "if(g.number % 2 = 0 ,'双','单') ds," +
             "g.id - (select g2.id from game g2 where if(g2.number % 2 = 0 ,'双','单') = if(g.number % 2 = 0 ,'双','单') and g2.id <= g.id ORDER BY g2.id desc limit 1,1) as dsjg," +
-            "(select count(*) from (select * from game where number is not null ORDER BY id desc limit ?1) g2 where g2.number = g.number GROUP BY g2.number) sjcs " +
-            "from game g where g.number is not null ORDER BY g.id desc limit ?2;",
+            "(select count(*) from (select * from game where number is not null ORDER BY id desc limit 200) g2 where g2.number = g.number GROUP BY g2.number) sjcs " +
+            "from game g where g.number is not null ORDER BY g.id desc limit 200;",
             nativeQuery = true)
-    List<Map<String,Integer>> find100GameNum(Integer gameCount1,Integer gameCount2);
+    List<Map<String,Integer>> find100GameNum();
 
     @Query(value = "select g.number num ," +
             "g.id - (select g2.id from game g2 where g2.number = g.number and g2.id <= g.id ORDER BY g2.id desc limit 1,1) as jg " +
