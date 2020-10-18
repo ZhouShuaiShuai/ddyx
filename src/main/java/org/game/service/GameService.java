@@ -39,8 +39,8 @@ public class GameService {
     @Autowired
     private UserInfoDao userInfoDao;
 
-    public Result find100GameNum(){
-        List<Map<String,Integer>> resultMap = gameDao.find100GameNum();
+    public Result find100GameNum(Integer gameCount){
+        List<Map<String,Integer>> resultMap = gameDao.find100GameNum(gameCount,gameCount);
         return new Result(resultMap);
     }
 

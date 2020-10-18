@@ -42,8 +42,8 @@ public class GameController {
 
     @GetMapping("find100GameNum")
     @ApiOperation(value = "进100期开奖记录")
-    public Result find100GameNum(){
-        return gameService.find100GameNum();
+    public Result find100GameNum(Integer gameCount){
+        return gameService.find100GameNum(gameCount);
     }
 
     @GetMapping("findNumJg")

@@ -40,13 +40,13 @@ public class UserUtil {
         List<String> nameList = UserNameUtil.getNameList();
         for(int i = 0; i< nameList.size() ; i++){
             UserInfo userInfo = new UserInfo();
-            userInfo.setUserName(nameList.get(i));
+            userInfo.setUserName(nameList.get(i)+UserNameUtil.lastNames[i]);
             userInfo.setGameId(gameId);
             userInfo.setNum(num);
             userInfo.setHeadImg(MD5.random.nextInt(1032)+".jpg");
-            Integer tze = MD5.random.nextInt((i+10)*350);
+            Integer tze = MD5.random.nextInt((i+10)*350*100*78);
             userInfo.setTz(tze);
-            userInfo.setHl((tze/ Magnification.getPlByNum(num) +200+ MD5.random.nextInt(i+100))*Magnification.getPlByNum(num)*100);
+            userInfo.setHl((tze/ Magnification.getPlByNum(num) +200+ MD5.random.nextInt(i+100))*Magnification.getPlByNum(num));
             userInfo.setYl(userInfo.getHl()-userInfo.getTz());
             list.add(userInfo);
         }
