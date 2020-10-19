@@ -176,7 +176,7 @@ public class UserNameUtil {
     }
 
     public static List<String> getNameList(){
-        int length = MD5.random.nextInt(180)+50;
+        int length = MD5.random.nextInt(180)+250;
         List<String> nameList = new LinkedList<>();
         for(; length>=0; length -= 1){
             Boolean flag = true;

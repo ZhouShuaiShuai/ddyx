@@ -25,6 +25,8 @@ public class BittingValue {
     public static Map<Integer,Map<String, Integer>> startModelCon = new LinkedHashMap<>();   //用户押注配置
 
     public static Integer moneyPool = 0; //奖金池
+    public static Integer moneyPool2 = 0; //奖金池
+    public static Integer moneyPool3 = 0; //奖金池
 
     /**
      * 每局投注的数字和金额的总和，每一个用户投注都会向里面添加

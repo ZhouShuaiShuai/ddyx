@@ -109,10 +109,14 @@ public class GameService {
 
         Game game = new Game(BittingValue.game);
         //奖金池设置
-        Integer moneyPool = BittingValue.moneyPool + (160-game.getReTime())*(MD5.random.nextInt(20)+200);
+        Integer moneyPool = BittingValue.moneyPool + (160-game.getReTime())*(MD5.random.nextInt(300)+30000);
+        Integer moneyPool2 = BittingValue.moneyPool2 + (160-game.getReTime())*(MD5.random.nextInt(200)+20000);
+        Integer moneyPool3 = BittingValue.moneyPool3 + (160-game.getReTime())*(MD5.random.nextInt(100)+10000);
 
         game.setJackpot(new BigDecimal(moneyPool));
         BittingValue.moneyPool = moneyPool;
+        BittingValue.moneyPool2 = moneyPool2;
+        BittingValue.moneyPool3 = moneyPool3;
 
         List<Game> games;
         boolean flagConf = false;
@@ -158,6 +162,8 @@ public class GameService {
             if(user!=null)
             put("当前用户信息",user);
             put("当前用户是否投注",flag);
+            put("第二把金豆池",BittingValue.moneyPool2);
+            put("第三把金豆池",BittingValue.moneyPool3);
         }});
     }
 
