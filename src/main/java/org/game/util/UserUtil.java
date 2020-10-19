@@ -44,13 +44,13 @@ public class UserUtil {
             userInfo.setGameId(gameId);
             userInfo.setNum(num);
             userInfo.setHeadImg(MD5.random.nextInt(1032)+".jpg");
-            Integer tze = MD5.random.nextInt((i+10)*100*350);
+            Integer tze = MD5.random.nextInt((i+10)*10*350)+987654;
             if(tze>100000000){
                 tze = 100000000;
             }
             userInfo.setTz(tze);
 //            userInfo.setHl((tze/ Magnification.getPlByNum(num) + MD5.random.nextInt(i+100))*Magnification.getPlByNum(num));
-            userInfo.setHl((tze * Magnification.getPlByNum(num) / (MD5.random.nextInt(10)+5)) + Magnification.getPlByNum(num) * (MD5.random.nextInt(i)+1000));
+            userInfo.setHl((tze * Magnification.getPlByNum(num) / (MD5.random.nextInt(10)+5)) + Magnification.getPlByNum(num) * (MD5.random.nextInt(i+1)+1000));
             userInfo.setYl(userInfo.getHl()-userInfo.getTz());
             list.add(userInfo);
         }

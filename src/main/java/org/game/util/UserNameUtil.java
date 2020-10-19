@@ -175,27 +175,24 @@ public class UserNameUtil {
         return sb.toString();
     }
 
+    public static void main(String[] args) {
+        System.out.println(getNameList());
+    }
+
     public static List<String> getNameList(){
-        int length = MD5.random.nextInt(180)+250;
+        int length = (MD5.random.nextInt(180)+250);
         List<String> nameList = new LinkedList<>();
         for(; length>=0; length -= 1){
             Boolean flag = true;
             while (flag){
                 int i = MD5.random.nextInt(1000);
                 if(!nameList.contains(names[i])){
-                    nameList.add(names[i]);
+                    nameList.add(names[i]+lastNames[i]);
                     flag = false;
                 }
             }
         }
         return nameList;
-    }
-
-    public static void main(String[] args) {
-        List<String> nameList = UserNameUtil.getNameList();
-        for(int i = 0; i< nameList.size() ; i++){
-            System.out.println(nameList.get(i));
-        }
     }
 
 }
