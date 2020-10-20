@@ -121,7 +121,6 @@ public class BittingValue {
             put(25,0.00d);put(26,0.00d);put(27,0.00d);}};
         betMap = Collections.synchronizedMap(new HashMap<>());
         returnMap = new LinkedHashMap<>();
-        moneyPool = 0;
         falg = true;
         System.out.println("DDD"+betMap);
         System.out.println("DDD"+betMap2);
