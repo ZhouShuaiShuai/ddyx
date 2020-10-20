@@ -62,6 +62,7 @@ public class BittingValue {
     public static void initBittingValue(Game game, BettingService bettingService){
         System.out.println("XXX"+betMap);
         System.out.println("XXX"+betMap2);
+        BittingValue.moneyPool = BittingValue.moneyPool2;
         BittingValue.moneyPool2 = BittingValue.moneyPool3;
         BittingValue.moneyPool3 = 0;
         bettingModelList = new LinkedHashMap<>();
