@@ -109,7 +109,12 @@ public class GameService {
 
         Game game = new Game(BittingValue.game);
         //奖金池设置
-        Integer moneyPool = BittingValue.moneyPool + (160-game.getReTime())*(MD5.random.nextInt(300)+30000);
+        Integer moneyPool;
+        if(BittingValue.game.getReTime()<=30){
+            moneyPool = BittingValue.moneyPool;
+        }else {
+            moneyPool = BittingValue.moneyPool + (160-game.getReTime())*(MD5.random.nextInt(300)+30000);
+        }
         Integer moneyPool2 = BittingValue.moneyPool2 + (160-game.getReTime())*(MD5.random.nextInt(200)+20000);
         Integer moneyPool3 = BittingValue.moneyPool3 + (160-game.getReTime())*(MD5.random.nextInt(100)+10000);
 
