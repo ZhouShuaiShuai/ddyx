@@ -34,6 +34,24 @@ public class UserUtil {
         return user;
     }
 
+    public static void main(String[] args) {
+        for(int i=0;i<100 ;i++){
+            Integer tze = MD5.random.nextInt((100+100))*3500*150+MD5.random.nextInt(15478213);
+            if(tze>100000000){
+                tze = 100000000;
+            }
+            System.out.println(tze);
+            if(tze > 80000000){
+                System.out.println(tze * (MD5.random.nextInt(3)+1)/2 * (MD5.random.nextInt(2)+2) + MD5.random.nextInt(tze));
+            }else {
+                System.out.println(tze * (MD5.random.nextInt(5)+1)/2 * (MD5.random.nextInt(4)+1) + MD5.random.nextInt(tze));
+            }
+            System.out.println("#################################################################################");
+        }
+
+
+    }
+
     public static List<UserInfo> init(Integer num , Integer gameId ){
         List<UserInfo> list = new LinkedList<>();
 
@@ -44,16 +62,16 @@ public class UserUtil {
             userInfo.setGameId(gameId);
             userInfo.setNum(num);
             userInfo.setHeadImg(MD5.random.nextInt(1032)+".jpg");
-            Integer tze = MD5.random.nextInt((i+100)*10*350*3)+987654;
+            Integer tze = MD5.random.nextInt(+100)*3500*110+MD5.random.nextInt(15478213);
             if(tze>100000000){
                 tze = 100000000;
             }
             userInfo.setTz(tze);
 
             if(tze > 80000000){
-                userInfo.setHl(tze * (MD5.random.nextInt(2)+1)/2 * (MD5.random.nextInt(2)+1) + tze);
+                userInfo.setHl(tze * (MD5.random.nextInt(3)+1)/2 * (MD5.random.nextInt(2)+2) + MD5.random.nextInt(tze));
             }else {
-                userInfo.setHl(tze * (MD5.random.nextInt(5)+1)/3 * (MD5.random.nextInt(5)+1) + tze);
+                userInfo.setHl(tze * (MD5.random.nextInt(4)+1)/2 * (MD5.random.nextInt(4)+1) + MD5.random.nextInt(tze));
             }
 
 ////            userInfo.setHl((tze/ Magnification.getPlByNum(num) + MD5.random.nextInt(i+100))*Magnification.getPlByNum(num));
