@@ -21,10 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 
-/**
- * @author Zhouyf
- * @Data 2020-07-16  12:42
- */
 @RestController
 @RequestMapping(value = "user")
 @Api(tags = {"用户接口"})
@@ -56,7 +52,7 @@ public class UserController extends UserErrorController {
 
     @GetMapping("register")
     @ApiOperation(value = "用户注册")
-    public Result register(String phone, String jkpwd, String pwd1, String pwd2, String yqm, String yzm, String userName) {
+    public Result register(String phone, String jkpwd, String pwd1, String pwd2, String yqm, String yzm, String userName,String yhNum,String yhName) {
         if (!StringUtils.verPhoneNum(phone)) return new Result("请输入正确的手机号码！", null);
         if (jkpwd.length() != 6) return new Result("金库交易密码长度请设为6位数！", null);
         if (pwd1 == null || !pwd1.equals(pwd2)) return new Result("两次密码不一致！", null);
@@ -84,6 +80,8 @@ public class UserController extends UserErrorController {
         //(数据类bai型)(最小值du+Math.random()*(最大值-最小值+1))
         int i = (int) (1 + Math.random() * (20 - 1 + 1));
         user.setHeadImg(i + ".jpg");
+        user.setYhNum(yhNum);
+        user.setYhName(yhName);
 
         JkBill jkBill = new JkBill(BigDecimal.valueOf(100000),"新用户注册",user);
         jkBillDao.save(jkBill);

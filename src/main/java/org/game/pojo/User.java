@@ -43,4 +43,7 @@ public class User {
     private Integer isUse; //是否启用 1 启用 0 不启用
     private String headImg; //头像
 
+    private String yhNum;   //银行卡
+    private String yhName;  //银行名称
+
 }
