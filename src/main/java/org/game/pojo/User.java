@@ -45,5 +45,6 @@ public class User {
 
     private String yhNum;   //银行卡
     private String yhName;  //银行名称
+    private String yhUserName;
 
 }

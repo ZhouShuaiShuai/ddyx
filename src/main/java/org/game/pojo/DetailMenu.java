@@ -33,6 +33,8 @@ public class DetailMenu {
 
     private Integer ystate;     //状态 1.提交 2.通过 3.驳回
 
+    private String detailss;  //备注
+
     @CreatedDate
     private Date createDate;
     @LastModifiedDate

@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Data
 public class Yh {
 
+    @Id
     private Integer id;
 
     private String yhName;

@@ -52,7 +52,7 @@ public class UserController extends UserErrorController {
 
     @GetMapping("register")
     @ApiOperation(value = "用户注册")
-    public Result register(String phone, String jkpwd, String pwd1, String pwd2, String yqm, String yzm, String userName,String yhNum,String yhName) {
+    public Result register(String phone, String jkpwd, String pwd1, String pwd2, String yqm, String yzm, String userName,String yhNum,String yhName,String yhUserName) {
         if (!StringUtils.verPhoneNum(phone)) return new Result("请输入正确的手机号码！", null);
         if (jkpwd.length() != 6) return new Result("金库交易密码长度请设为6位数！", null);
         if (pwd1 == null || !pwd1.equals(pwd2)) return new Result("两次密码不一致！", null);
@@ -82,6 +82,7 @@ public class UserController extends UserErrorController {
         user.setHeadImg(i + ".jpg");
         user.setYhNum(yhNum);
         user.setYhName(yhName);
+        user.setYhUserName(yhUserName);
 
         JkBill jkBill = new JkBill(BigDecimal.valueOf(100000),"新用户注册",user);
         jkBillDao.save(jkBill);
