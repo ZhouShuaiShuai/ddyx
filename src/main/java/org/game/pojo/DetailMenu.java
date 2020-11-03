@@ -27,9 +27,11 @@ public class DetailMenu {
 
     private String userYhName;
 
+    private String yhUserName;
+
     private BigDecimal jdNum;
 
-    private Integer ytype;   //类型。体现还是充值
+    private Integer ytype;   //类型。1体现还是2充值
 
     private Integer ystate;     //状态 1.提交 2.通过 3.驳回
 

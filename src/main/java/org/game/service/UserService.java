@@ -47,6 +47,9 @@ public class UserService {
         resultMap.put("jkmoney", user.getJkmoney());
         resultMap.put("headImg", user.getHeadImg());
         resultMap.put("id", user.getId());
+        resultMap.put("yhName", user.getYhName());
+        resultMap.put("yhNum", user.getYhNum());
+        resultMap.put("yhUserName", user.getYhUserName());
 //        resultMap.put("yqm", user.getYqm());
         String jwt = JWTToken.buildJwt(user);
         resultMap.put("token", jwt);

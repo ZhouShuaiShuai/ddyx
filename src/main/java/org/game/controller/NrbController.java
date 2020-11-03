@@ -47,4 +47,15 @@ public class NrbController {
         return new Result(nrbDao.findAllByType(type,Sort.by("hl").descending()));
     }
 
+    @GetMapping("update")
+    @ApiOperation(value = "修改牛人榜")
+    public Result update(Integer id ,String name,long hl,String type,long jl ){
+        Nrb nrb = nrbDao.findById(id).get();
+        nrb.setHl(hl);
+        nrb.setJl(jl);
+        nrb.setName(name);
+        nrb.setType(type);
+        return new Result(nrbDao.saveAndFlush(nrb));
+    }
+
 }
