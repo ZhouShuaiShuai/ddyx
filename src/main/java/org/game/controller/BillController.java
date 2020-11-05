@@ -3,7 +3,9 @@ package org.game.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.game.dao.JkBillDao;
 import org.game.dao.UserDao;
+import org.game.pojo.JkBill;
 import org.game.pojo.User;
 import org.game.result.Result;
 import org.game.service.BillService;
@@ -36,6 +38,9 @@ public class BillController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private JkBillDao jkBillDao;
 
     @GetMapping("saveMoney")
     @ApiOperation(value = "存入小金库")
@@ -80,6 +85,17 @@ public class BillController {
         User user = UserUtil.getUserByReq(req, userDao);
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.DESC, "create_date");
         return billService.getJkLog(user.getId(), pageable);
+    }
+
+    @GetMapping("addJkLog")
+    @ApiOperation(value = "添加小金库的变动日志")
+    public Result addJkLog(HttpServletRequest req,String type,BigDecimal money){
+        User user = UserUtil.getUserByReq(req, userDao);
+        user.setJkmoney(user.getJkmoney().add(money));
+        user.setMoney(user.getMoney().add(money));
+        userDao.saveAndFlush(user);
+        JkBill jkBill = new JkBill(money,type,user);
+        return new Result(jkBillDao.save(jkBill));
     }
 
 }
