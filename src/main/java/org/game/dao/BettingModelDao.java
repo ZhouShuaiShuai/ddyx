@@ -54,4 +54,9 @@ public interface BettingModelDao extends JpaRepository<BettingModel, Integer>  {
             nativeQuery = true)
     List<Map<String,Object>> getWinOrLoserByDay(Integer userId);
 
+    @Query(value = "select DATE_FORMAT(ye.create_date,'%Y-%m-%d') date , sum(ye.game_money) money , ye.user_id , u.user_name from yebill ye LEFT JOIN `user` u on ye.user_id = u.id " +
+            "where DATE_FORMAT(ye.create_date,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d') " +
+            "group by ye.user_id\n",
+            nativeQuery = true)
+    List<Map<String,Object>> getAllUserBillByDate();
 }

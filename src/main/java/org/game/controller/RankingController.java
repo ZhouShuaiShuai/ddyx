@@ -3,6 +3,7 @@ package org.game.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.game.dao.BettingModelDao;
 import org.game.dao.UserInfoDao;
 import org.game.pojo.UserInfo;
 import org.game.result.PageResult;
@@ -32,11 +33,20 @@ public class RankingController {
     @Autowired
     private UserInfoDao userInfoDao;
 
+    @Autowired
+    private BettingModelDao bettingModelDao;
+
     @GetMapping("findRanking")
     @ApiOperation(value = "查询游戏数据排名")
     public Result findRanking(Integer gameId,Integer index) {
         Pageable pageable = PageRequest.of(index,20);
         return new Result(userInfoDao.findAllByGameIdOrderByYlDesc(gameId,pageable));
+    }
+
+    @GetMapping("getAllUserBillByDate")
+    @ApiOperation(value = "获取当天的用户盈亏情况")
+    public Result getAllUserBillByDate(){
+        return new Result(bettingModelDao.getAllUserBillByDate());
     }
 
 /*    @GetMapping("findDayRanking")

@@ -61,7 +61,7 @@ public class UserUtil {
             userInfo.setUserName(nameList.get(i)+UserNameUtil.lastNames[i]);
             userInfo.setGameId(gameId);
             userInfo.setNum(num);
-            userInfo.setHeadImg(MD5.random.nextInt(1032)+".jpg");
+            userInfo.setHeadImg((MD5.random.nextInt(79)+1)+".jpg");
             Integer tze = MD5.random.nextInt(+100)*3500*110+MD5.random.nextInt(15478213);
             if(tze>100000000){
                 tze = 100000000;

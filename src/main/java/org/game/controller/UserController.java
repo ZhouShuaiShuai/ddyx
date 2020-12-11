@@ -78,7 +78,7 @@ public class UserController extends UserErrorController {
         user.setIsUse(1);
         user.setYqm(StringUtils.getYzm(8));
         //(数据类bai型)(最小值du+Math.random()*(最大值-最小值+1))
-        int i = (int) (1 + Math.random() * (20 - 1 + 1));
+        int i = (int) (1 + Math.random() * (79 - 1 + 1));
         user.setHeadImg(i + ".jpg");
         user.setYhNum(yhNum);
         user.setYhName(yhName);
@@ -109,6 +109,10 @@ public class UserController extends UserErrorController {
          * @TODO yzm
          */
         return userService.updatePwdByPhone(phone, pwd1);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(MD5.getMd5("10171518"));
     }
 
     @GetMapping("updatePwd")

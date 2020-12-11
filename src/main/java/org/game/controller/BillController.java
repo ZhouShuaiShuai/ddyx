@@ -10,6 +10,7 @@ import org.game.pojo.User;
 import org.game.result.Result;
 import org.game.service.BillService;
 import org.game.util.MD5;
+import org.game.util.StringUtils;
 import org.game.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
@@ -89,10 +90,14 @@ public class BillController {
 
     @GetMapping("addJkLog")
     @ApiOperation(value = "添加小金库的变动日志")
-    public Result addJkLog(HttpServletRequest req,String type,BigDecimal money){
-        User user = UserUtil.getUserByReq(req, userDao);
+    public Result addJkLog(String userName,String type,BigDecimal money){
+        if(StringUtils.isEmpty(userName)){
+            return new Result("参数不能为空！");
+        }
+        User user = userDao.findByUserName(userName);
+        if (user == null) return new Result("未找到对应的系统用户！", null);
         user.setJkmoney(user.getJkmoney().add(money));
-        user.setMoney(user.getMoney().add(money));
+//        user.setMoney(user.getMoney().add(money));
         userDao.saveAndFlush(user);
         JkBill jkBill = new JkBill(money,type,user);
         return new Result(jkBillDao.save(jkBill));
